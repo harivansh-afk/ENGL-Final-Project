@@ -41,7 +41,7 @@ const Navbar = () => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link to="/quiz">
-                <Button variant="ghost">
+                <Button variant="secondary" size="sm">
                   <Users className="mr-2 h-4 w-4" />
                   Quiz
                 </Button>
@@ -49,7 +49,7 @@ const Navbar = () => {
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link to="/success-stories">
-                <Button variant="ghost">
+                <Button variant="secondary" size="sm">
                   <Heart className="mr-2 h-4 w-4" />
                   Success Stories
                 </Button>

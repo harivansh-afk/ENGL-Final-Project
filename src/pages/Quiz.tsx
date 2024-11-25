@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { quizQuestions, type QuizResult } from '@/data/quiz';
+import { quizResults } from '@/data/quiz';
 
 const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -31,7 +32,7 @@ const Quiz = () => {
       return acc;
     }, {} as Record<string, number>);
 
-    const result = Object.entries(counts).reduce((a, b) => 
+    const result = Object.entries(counts).reduce((a, b) =>
       counts[a[0]] > counts[b[0]] ? a : b
     )[0];
 
@@ -55,7 +56,7 @@ const Quiz = () => {
           <CardContent className="space-y-4">
             <p className="italic text-muted-foreground">{result.quote}</p>
             <p>{result.description}</p>
-            <Button 
+            <Button
               className="w-full mt-4"
               onClick={() => {
                 setCurrentQuestion(0);
@@ -94,14 +95,24 @@ const Quiz = () => {
             className="space-y-4"
           >
             {quizQuestions[currentQuestion].options.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
-                <RadioGroupItem value={option.value} id={option.value} />
-                <Label htmlFor={option.value}>{option.label}</Label>
+              <div
+                key={option.value}
+                className="flex items-start space-x-3 rounded-lg border p-4 transition-colors hover:bg-accent cursor-pointer"
+                onClick={() => handleAnswer(option.value)}
+              >
+                <RadioGroupItem value={option.value} id={option.value} className="mt-1" />
+                <Label
+                  htmlFor={option.value}
+                  className="cursor-pointer flex-grow text-base leading-relaxed"
+                >
+                  {option.label}
+                </Label>
               </div>
             ))}
           </RadioGroup>
           <Button
-            className="w-full mt-6"
+            className="w-full mt-8"
+            size="lg"
             onClick={handleNext}
             disabled={!answers[currentQuestion]}
           >
@@ -111,6 +122,6 @@ const Quiz = () => {
       </Card>
     </div>
   );
-};
+}
 
 export default Quiz;
