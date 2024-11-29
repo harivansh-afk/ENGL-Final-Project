@@ -35,6 +35,16 @@ const Home = () => {
           </div>
         </Link>
 
+        {/* Success Stories */}
+        <Link to="/success-stories" className="feature-card">
+          <div className="bg-rose-100 p-6 rounded-lg hover:shadow-lg transition">
+            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Success Stories</h2>
+            <p className="text-sage-700">
+              Real tales of romance from our beloved characters
+            </p>
+          </div>
+        </Link>
+
         {/* Dear Jane */}
         <Link to="/advice" className="feature-card">
           <div className="bg-cream-100 p-6 rounded-lg hover:shadow-lg transition">
@@ -51,16 +61,6 @@ const Home = () => {
             <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Vendor Directory</h2>
             <p className="text-sage-700">
               From Pemberley Estate venues to Mrs. Bennet's matchmaking services
-            </p>
-          </div>
-        </Link>
-
-        {/* Success Stories */}
-        <Link to="/stories" className="feature-card">
-          <div className="bg-rose-100 p-6 rounded-lg hover:shadow-lg transition">
-            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Success Stories</h2>
-            <p className="text-sage-700">
-              Real tales of romance from our beloved characters
             </p>
           </div>
         </Link>

@@ -1,34 +1,89 @@
-export const successStories = [
+export type SuccessStory = {
+  id: string;
+  couple: string;
+  imageUrl: string;
+  story: string;
+  date: string;
+  location: string;
+  quote: string;
+  details: {
+    ceremony: string;
+    reception: string;
+    specialMoments: string[];
+  };
+};
+
+export const successStories: SuccessStory[] = [
   {
-    id: '1',
-    couple: 'Elizabeth & Darcy',
-    novel: 'Pride and Prejudice',
-    image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&dpr=2&q=80',
-    quote: "In vain have I struggled. It will not do. My feelings will not be repressed. You must allow me to tell you how ardently I admire and love you.",
-    story: "Their journey from mutual prejudice to profound understanding exemplifies how true love can overcome pride and first impressions. Through challenges and misunderstandings, they discovered that real connection grows from honest self-reflection and the courage to change."
+    id: 'elizabeth-darcy',
+    couple: 'Elizabeth Bennet & Fitzwilliam Darcy',
+    imageUrl: '/images/success-stories/elizabeth-darcy.jpg',
+    story: 'From initial prejudice to profound understanding, Elizabeth and Darcy\'s journey is a testament to how love can overcome pride and preconceptions. Their story began with a series of misunderstandings at the Meryton assembly but blossomed into a deep connection built on mutual respect and admiration.',
+    date: 'Spring 1813',
+    location: 'Longbourn Church, Hertfordshire',
+    quote: "It has been coming on so gradually, that I hardly know when it began.",
+    details: {
+      ceremony: 'Traditional ceremony at Longbourn Church',
+      reception: 'An elegant affair at Pemberley',
+      specialMoments: [
+        'First dance at the Netherfield Ball',
+        'Surprise visit to Pemberley',
+        'Morning walk in the gardens where they reconciled'
+      ]
+    }
   },
   {
-    id: '2',
-    couple: 'Emma & Mr. Knightley',
-    novel: 'Emma',
-    image: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&dpr=2&q=80',
-    quote: "If I loved you less, I might be able to talk about it more.",
-    story: "A tale of friendship blossoming into love, their story shows how the best partnerships are built on mutual respect and the ability to help each other grow. Through Emma's journey of self-discovery, she learns the value of Mr. Knightley's honest guidance."
-  },
-  {
-    id: '3',
-    couple: 'Anne & Captain Wentworth',
-    novel: 'Persuasion',
-    image: 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&dpr=2&q=80',
-    quote: "You pierce my soul. I am half agony, half hope.",
-    story: "Their reunion after eight years proves that true love can withstand time and circumstance. Despite past regrets and the interference of family, their constancy and growth as individuals led them back to each other."
-  },
-  {
-    id: '4',
-    couple: 'Marianne & Colonel Brandon',
-    novel: 'Sense and Sensibility',
-    image: 'https://images.unsplash.com/photo-1595732301236-4a39e6a35b4a?w=800&dpr=2&q=80',
+    id: 'marianne-brandon',
+    couple: 'Marianne Dashwood & Colonel Brandon',
+    imageUrl: '/images/success-stories/marianne-brandon.jpg',
+    story: 'From youthful romantic ideals to discovering deep and lasting love, Marianne and Colonel Brandon\'s story demonstrates how true love can defy initial impressions and grow from genuine care and devotion.',
+    date: 'Summer 1814',
+    location: 'Barton Park Chapel, Devonshire',
     quote: "The more I know of the world, the more I am convinced that I shall never see a man whom I can really love.",
-    story: "Their story demonstrates how love can grow from initial indifference to deep appreciation. Marianne's journey from romantic idealism to finding happiness with the steadfast Colonel Brandon shows how real love often differs from youthful fantasies."
+    details: {
+      ceremony: 'Musical ceremony at Barton Park Chapel',
+      reception: 'Celebration at Delaford',
+      specialMoments: [
+        'First pianoforte duet',
+        'Recovery at Cleveland',
+        'Autumn walks at Delaford'
+      ]
+    }
+  },
+  {
+    id: 'edmund-fanny',
+    couple: 'Edmund Bertram & Fanny Price',
+    imageUrl: '/images/success-stories/edmund-fanny.jpg',
+    story: 'A love that grew from childhood friendship to deep understanding, Fanny and Edmund\'s story shows how true worth and genuine feelings triumph over superficial attractions.',
+    date: 'Autumn 1814',
+    location: 'Mansfield Park Chapel',
+    quote: "We have all a better guide in ourselves, if we would attend to it, than any other person can be.",
+    details: {
+      ceremony: 'Intimate ceremony at Mansfield Park Chapel',
+      reception: 'Family gathering at the Parsonage',
+      specialMoments: [
+        'Reading together in the East room',
+        'Walks in the wilderness',
+        'Return to Mansfield Park'
+      ]
+    }
+  },
+  {
+    id: 'catherine-henry',
+    couple: 'Catherine Morland & Henry Tilney',
+    imageUrl: '/images/success-stories/catherine-henry.jpg',
+    story: 'What began with a dance at the Bath Assembly Rooms grew into a love story that helped Catherine mature from an imaginative girl into a discerning young woman.',
+    date: 'Spring 1814',
+    location: 'Fullerton Parish Church',
+    quote: "The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.",
+    details: {
+      ceremony: 'Charming ceremony at Fullerton',
+      reception: 'Celebration at Woodston Parsonage',
+      specialMoments: [
+        'First dance in Bath',
+        'Walks around Beechen Cliff',
+        'Visit to Woodston'
+      ]
+    }
   }
 ];

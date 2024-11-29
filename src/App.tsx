@@ -5,12 +5,12 @@ import Home from './pages/Home';
 import Blogs from './pages/Blogs';
 import BlogPost from './pages/BlogPost/BlogPost';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import SuccessStories from './pages/SuccessStories';
 
 // Lazy load other pages
 const Quiz = React.lazy(() => import('./pages/Quiz'));
 const Advice = React.lazy(() => import('./pages/Advice'));
 const Vendors = React.lazy(() => import('./pages/Vendors'));
-const Stories = React.lazy(() => import('./pages/Stories'));
 const MarketCalculator = React.lazy(() => import('./pages/MarketCalculator'));
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
               <Route path="/quiz" element={<Quiz />} />
               <Route path="/advice" element={<Advice />} />
               <Route path="/vendors" element={<Vendors />} />
-              <Route path="/stories" element={<Stories />} />
+              <Route path="/success-stories" element={<SuccessStories />} />
               <Route path="/calculator" element={<MarketCalculator />} />
             </Routes>
           </Suspense>

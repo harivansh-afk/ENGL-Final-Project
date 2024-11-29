@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Toaster } from '@/components/ui/toaster';
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -16,7 +17,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
               <Link to="/quiz" className="nav-link">Bride Quiz</Link>
               <Link to="/advice" className="nav-link">Dear Jane</Link>
               <Link to="/vendors" className="nav-link">Vendors</Link>
-              <Link to="/stories" className="nav-link">Success Stories</Link>
+              <Link to="/success-stories" className="nav-link">Success Stories</Link>
               <Link to="/calculator" className="nav-link">Market Value</Link>
             </div>
           </div>
@@ -35,6 +36,8 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </footer>
+
+      <Toaster />
     </div>
   );
 };
