@@ -1,127 +1,176 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { quizQuestions, type QuizResult } from '@/data/quiz';
-import { quizResults } from '@/data/quiz';
+import type { QuizQuestion, AustenCharacter } from '../types';
+
+const QUIZ_QUESTIONS: QuizQuestion[] = [
+  {
+    id: '1',
+    question: 'How do you approach matters of the heart?',
+    options: [
+      {
+        text: 'With passion and spontaneity',
+        character: 'Marianne Dashwood',
+        points: 2
+      },
+      {
+        text: 'With wit and intelligence',
+        character: 'Elizabeth Bennet',
+        points: 2
+      },
+      {
+        text: 'With careful consideration and practicality',
+        character: 'Elinor Dashwood',
+        points: 2
+      }
+    ]
+  },
+  {
+    id: '2',
+    question: 'What quality do you value most in a potential partner?',
+    options: [
+      {
+        text: 'Their social standing and connections',
+        character: 'Emma Woodhouse',
+        points: 2
+      },
+      {
+        text: 'Their character and principles',
+        character: 'Elizabeth Bennet',
+        points: 2
+      },
+      {
+        text: 'Their stability and reliability',
+        character: 'Anne Elliot',
+        points: 2
+      }
+    ]
+  },
+  {
+    id: '3',
+    question: 'How do you feel about social gatherings?',
+    options: [
+      {
+        text: 'I love being the center of attention',
+        character: 'Emma Woodhouse',
+        points: 2
+      },
+      {
+        text: 'I enjoy observing and making witty observations',
+        character: 'Elizabeth Bennet',
+        points: 2
+      },
+      {
+        text: 'I prefer intimate gatherings with close friends',
+        character: 'Anne Elliot',
+        points: 2
+      }
+    ]
+  }
+];
+
+const CHARACTER_DESCRIPTIONS: Record<AustenCharacter, string> = {
+  'Elizabeth Bennet': 'Like Elizabeth, you are witty, intelligent, and not afraid to speak your mind. You value genuine connections over social status and aren\'t afraid to turn down an unsuitable match.',
+  'Emma Woodhouse': 'Like Emma, you are confident, socially adept, and perhaps a bit meddlesome (in the best way). You have a natural talent for bringing people together.',
+  'Marianne Dashwood': 'Like Marianne, you wear your heart on your sleeve and believe in passionate, romantic love. You\'re not afraid to express your emotions openly.',
+  'Anne Elliot': 'Like Anne, you are thoughtful, patient, and deeply loyal. You understand that true love sometimes requires waiting for the right moment.',
+  'Catherine Morland': 'Like Catherine, you approach life with wonder and imagination. Your romantic nature sometimes leads you to see mysteries where there are none.',
+  'Elinor Dashwood': 'Like Elinor, you are sensible and responsible, often putting others\' needs before your own. You handle matters of the heart with grace and discretion.'
+};
 
 const Quiz = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
-  const [result, setResult] = useState<QuizResult | null>(null);
+  const [answers, setAnswers] = useState<Record<string, AustenCharacter>>({});
+  const [result, setResult] = useState<AustenCharacter | null>(null);
 
-  const handleAnswer = (value: string) => {
-    const newAnswers = [...answers];
-    newAnswers[currentQuestion] = value;
-    setAnswers(newAnswers);
-  };
+  const handleAnswer = (character: AustenCharacter) => {
+    setAnswers(prev => ({
+      ...prev,
+      [QUIZ_QUESTIONS[currentQuestion].id]: character
+    }));
 
-  const handleNext = () => {
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+    if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
     } else {
-      calculateResult();
+      // Calculate result
+      const characterCounts: Record<AustenCharacter, number> = Object.values(answers).reduce(
+        (acc, character) => ({
+          ...acc,
+          [character]: (acc[character] || 0) + 1
+        }),
+        {} as Record<AustenCharacter, number>
+      );
+
+      const result = Object.entries(characterCounts).reduce(
+        (max, [character, count]) => (count > (characterCounts[max] || 0) ? character : max),
+        Object.keys(characterCounts)[0]
+      ) as AustenCharacter;
+
+      setResult(result);
     }
   };
 
-  const calculateResult = () => {
-    // Simple calculation - most frequent answer determines the result
-    const counts = answers.reduce((acc, answer) => {
-      acc[answer] = (acc[answer] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const result = Object.entries(counts).reduce((a, b) =>
-      counts[a[0]] > counts[b[0]] ? a : b
-    )[0];
-
-    setResult(quizResults[result]);
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setAnswers({});
+    setResult(null);
   };
 
   if (result) {
     return (
-      <div className="space-y-8">
-        <header className="text-center space-y-4">
-          <h1 className="font-serif text-4xl">Your Result</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            You are most like...
+      <div className="max-w-2xl mx-auto text-center space-y-8">
+        <h1 className="font-cormorant text-4xl text-sage-900">Your Result</h1>
+        <div className="bg-cream-50 p-8 rounded-lg">
+          <h2 className="font-cormorant text-3xl text-sage-900 mb-4">
+            You are {result}!
+          </h2>
+          <p className="text-sage-700 mb-6">
+            {CHARACTER_DESCRIPTIONS[result]}
           </p>
-        </header>
-
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle className="font-serif text-2xl">{result.character}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="italic text-muted-foreground">{result.quote}</p>
-            <p>{result.description}</p>
-            <Button
-              className="w-full mt-4"
-              onClick={() => {
-                setCurrentQuestion(0);
-                setAnswers([]);
-                setResult(null);
-              }}
-            >
-              Take Quiz Again
-            </Button>
-          </CardContent>
-        </Card>
+          <button
+            onClick={resetQuiz}
+            className="bg-sage-500 text-white px-6 py-2 rounded hover:bg-sage-600 transition"
+          >
+            Take Quiz Again
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-2xl mx-auto space-y-8">
       <header className="text-center space-y-4">
-        <h1 className="font-serif text-4xl">Which Austen Bride Are You?</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Answer these questions to discover your Austen heroine match
+        <h1 className="font-cormorant text-4xl text-sage-900">
+          Which Austen Bride Are You?
+        </h1>
+        <p className="text-sage-700">
+          Answer these questions to discover your literary matrimonial counterpart
         </p>
       </header>
 
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="font-serif">
-            Question {currentQuestion + 1} of {quizQuestions.length}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg mb-6">{quizQuestions[currentQuestion].question}</p>
-          <RadioGroup
-            value={answers[currentQuestion]}
-            onValueChange={handleAnswer}
-            className="space-y-4"
-          >
-            {quizQuestions[currentQuestion].options.map((option) => (
-              <div
-                key={option.value}
-                className="flex items-start space-x-3 rounded-lg border p-4 transition-colors hover:bg-accent cursor-pointer"
-                onClick={() => handleAnswer(option.value)}
-              >
-                <RadioGroupItem value={option.value} id={option.value} className="mt-1" />
-                <Label
-                  htmlFor={option.value}
-                  className="cursor-pointer flex-grow text-base leading-relaxed"
-                >
-                  {option.label}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-          <Button
-            className="w-full mt-8"
-            size="lg"
-            onClick={handleNext}
-            disabled={!answers[currentQuestion]}
-          >
-            {currentQuestion === quizQuestions.length - 1 ? 'See Result' : 'Next Question'}
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="bg-cream-50 p-8 rounded-lg">
+        <div className="mb-6">
+          <h2 className="font-cormorant text-2xl text-sage-900 mb-2">
+            Question {currentQuestion + 1} of {QUIZ_QUESTIONS.length}
+          </h2>
+          <p className="text-sage-700">
+            {QUIZ_QUESTIONS[currentQuestion].question}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {QUIZ_QUESTIONS[currentQuestion].options.map((option) => (
+            <button
+              key={option.text}
+              onClick={() => handleAnswer(option.character)}
+              className="w-full text-left p-4 rounded bg-white hover:bg-sage-50 transition"
+            >
+              {option.text}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Quiz;

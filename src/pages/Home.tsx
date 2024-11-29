@@ -1,85 +1,91 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { BookOpen, Heart, Mail, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
     <div className="space-y-12">
-      <section className="text-center space-y-4">
-        <h1 className="font-serif text-4xl md:text-6xl">
+      {/* Hero Section */}
+      <section className="text-center py-16 bg-cream-100 rounded-lg">
+        <h1 className="font-cormorant text-5xl text-sage-900 mb-4">
           Welcome to Austen's Wedding Guide
         </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          A satirical blend of Regency-era matrimonial wisdom and modern wedding culture
+        <p className="font-lato text-lg text-sage-700 max-w-2xl mx-auto">
+          Your modern guide to matrimonial bliss, as Jane Austen would have imagined it
         </p>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <BookOpen className="h-8 w-8" />
-            <h3 className="font-serif text-xl">Character Blogs</h3>
-            <p className="text-muted-foreground">
-              Wisdom and wit from your favorite Austen characters
+      {/* Featured Sections */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Character Blogs */}
+        <Link to="/blogs" className="feature-card">
+          <div className="bg-sage-50 p-6 rounded-lg hover:shadow-lg transition">
+            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Character Blogs</h2>
+            <p className="text-sage-700">
+              Wisdom and wit from Charlotte Lucas's practical advice to Marianne Dashwood's romantic musings
             </p>
-            <Link to="/blogs">
-              <Button className="w-full">Read Blogs</Button>
-            </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </Link>
 
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <Mail className="h-8 w-8" />
-            <h3 className="font-serif text-xl">Dear Jane</h3>
-            <p className="text-muted-foreground">
-              Matrimonial advice with Austen's signature wit
+        {/* Bride Quiz */}
+        <Link to="/quiz" className="feature-card">
+          <div className="bg-rose-50 p-6 rounded-lg hover:shadow-lg transition">
+            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Which Austen Bride Are You?</h2>
+            <p className="text-sage-700">
+              Discover your literary matrimonial counterpart through our delightful quiz
             </p>
-            <Link to="/dear-jane">
-              <Button className="w-full">Seek Advice</Button>
-            </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </Link>
 
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <Users className="h-8 w-8" />
-            <h3 className="font-serif text-xl">Quiz</h3>
-            <p className="text-muted-foreground">
-              Discover which Austen bride matches your personality
+        {/* Dear Jane */}
+        <Link to="/advice" className="feature-card">
+          <div className="bg-cream-100 p-6 rounded-lg hover:shadow-lg transition">
+            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Dear Jane</h2>
+            <p className="text-sage-700">
+              Seeking counsel? Let Jane's timeless wisdom guide you through modern romance
             </p>
-            <Link to="/quiz">
-              <Button className="w-full">Take Quiz</Button>
-            </Link>
-          </CardContent>
-        </Card>
+          </div>
+        </Link>
 
-        <Card>
-          <CardContent className="p-6 space-y-4">
-            <Heart className="h-8 w-8" />
-            <h3 className="font-serif text-xl">Success Stories</h3>
-            <p className="text-muted-foreground">
-              Tales of matrimonial triumph from the pages of Austen
+        {/* Vendor Directory */}
+        <Link to="/vendors" className="feature-card">
+          <div className="bg-sage-100 p-6 rounded-lg hover:shadow-lg transition">
+            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Vendor Directory</h2>
+            <p className="text-sage-700">
+              From Pemberley Estate venues to Mrs. Bennet's matchmaking services
             </p>
-            <Link to="/success-stories">
-              <Button className="w-full">Read Stories</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </section>
+          </div>
+        </Link>
 
-      <section className="bg-muted p-8 rounded-lg">
-        <div className="max-w-3xl mx-auto text-center space-y-4">
-          <h2 className="font-serif text-3xl">Featured Quote</h2>
-          <blockquote className="text-xl italic">
-            "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."
-          </blockquote>
-          <p className="text-muted-foreground">- Pride and Prejudice</p>
+        {/* Success Stories */}
+        <Link to="/stories" className="feature-card">
+          <div className="bg-rose-100 p-6 rounded-lg hover:shadow-lg transition">
+            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Success Stories</h2>
+            <p className="text-sage-700">
+              Real tales of romance from our beloved characters
+            </p>
+          </div>
+        </Link>
+
+        {/* Featured Article */}
+        <div className="bg-cream-50 p-6 rounded-lg">
+          <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Latest from Charlotte</h2>
+          <p className="text-sage-700 mb-4">
+            "The Art of Practical Partnership: A Guide to Sensible Matches"
+          </p>
+          <Link to="/blogs/charlotte" className="text-sage-500 hover:text-sage-600">
+            Read More →
+          </Link>
         </div>
+      </div>
+
+      {/* Quote Section */}
+      <section className="text-center py-12 bg-sage-50 rounded-lg">
+        <blockquote className="font-cormorant text-2xl text-sage-900 italic">
+          "It is a truth universally acknowledged, that a single person in possession of a good fortune, must be in want of a spouse."
+        </blockquote>
+        <p className="mt-4 text-sage-700">- Adapted from Pride and Prejudice</p>
       </section>
     </div>
   );
-}
+};
 
 export default Home;
