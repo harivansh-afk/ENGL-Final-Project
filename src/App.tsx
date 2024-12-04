@@ -9,6 +9,8 @@ import SuccessStories from './pages/SuccessStories';
 import Analysis from './pages/Analysis';
 import ComparativeAnalysis from './pages/ComparativeAnalysis';
 import NetworkVisualization from './pages/NetworkVisualization';
+import Timeline from './pages/Timeline';
+import SocialClass from './pages/SocialClass';
 
 // Lazy load other pages
 const Quiz = React.lazy(() => import('./pages/Quiz'));
@@ -32,6 +34,8 @@ function App() {
               <Route path="/analysis" element={<Analysis />} />
               <Route path="/comparative" element={<ComparativeAnalysis />} />
               <Route path="/network" element={<NetworkVisualization />} />
+              <Route path="/timeline" element={<Timeline />} />
+              <Route path="/social-class" element={<SocialClass />} />
               <Route path="*" element={<div>Page not found</div>} />
             </Routes>
           </Suspense>

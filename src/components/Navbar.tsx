@@ -58,6 +58,18 @@ const Navbar = () => {
               >
                 Character Network
               </Link>
+              <Link
+                to="/timeline"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Timeline
+              </Link>
+              <Link
+                to="/social-class"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Social Class
+              </Link>
             </div>
           </nav>
         </div>

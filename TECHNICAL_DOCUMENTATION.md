@@ -21,6 +21,9 @@ src/
 │   ├── ui/               # Shadcn UI components
 │   ├── layout/           # Layout components
 │   ├── vendor/          # Vendor-specific components
+│   ├── timeline/        # Timeline components
+│   │   ├── InteractiveTimeline.tsx
+│   │   └── SocialClassView.tsx
 │   ├── BlogPost.tsx     # Blog post component
 │   ├── CommentSection.tsx
 │   ├── ErrorBoundary.tsx
@@ -124,6 +127,7 @@ The application uses React Router for navigation with the following route struct
 - Share functionality
 - Pagination for content lists
 - Market calculator
+- **New: Interactive timeline with multiple views**
 - **New: Literary analysis with themed tabs and novel selection**
 - **New: Comparative analysis for cross-novel exploration**
 - **New: Character network visualization**
@@ -455,3 +459,350 @@ The component uses a flex layout with the following structure:
    - Modular component structure
    - Clear configuration objects
    - Type-safe interfaces
+
+## Timeline Feature
+
+### Interactive Timeline Component
+
+The timeline visualization is implemented with a modern, flowing layout that displays events chronologically with the following features:
+
+```typescript
+interface TimelineEvent {
+  year: number;
+  type: "works" | "context" | "legacy" | "adaptations";
+  title: string;
+  description: string;
+  novel?: string;
+  significance?: string;
+}
+
+interface Props {
+  events: TimelineEvent[];
+}
+```
+
+#### Key Features
+
+1. **Event Display**
+
+   - Vertical flowing layout with connected events
+   - Events positioned horizontally based on year
+   - Clean card design with type-based color coding
+   - Connected events with vertical lines
+
+2. **Time Scale**
+
+   - Sticky year markers at the top
+   - Automatic year range calculation
+   - Visual period indicators
+   - Smooth scrolling behavior
+
+3. **Event Types**
+
+   - Works: Publications and writings
+   - Context: Historical events
+   - Legacy: Impact and influence
+   - Adaptations: Modern interpretations
+
+4. **Visual Design**
+
+   - Clean, modern card layout
+   - Type-based color coding:
+     - Works: Blue (#2196F3)
+     - Context: Purple (#9C27B0)
+     - Legacy: Green (#4CAF50)
+   - Subtle shadows and transitions
+   - Responsive container sizing
+
+5. **Interaction**
+   - Smooth horizontal scrolling
+   - Event selection with visual feedback
+   - Automatic scrolling to selected events
+   - Hover effects on cards and dots
+
+### Implementation Details
+
+```typescript
+// Color Scheme
+const getEventColor = (type: string) => {
+  switch (type) {
+    case "works":
+      return { background: "#E3F2FD", border: "#2196F3" };
+    case "context":
+      return { background: "#F3E5F5", border: "#9C27B0" };
+    case "legacy":
+      return { background: "#E8F5E9", border: "#4CAF50" };
+    default:
+      return { background: "#FAFAFA", border: "#9E9E9E" };
+  }
+};
+
+// Event Click Handler
+const handleEventClick = (event: TimelineEvent) => {
+  setSelectedEvent(event);
+  // Scroll event into view with smooth animation
+  if (timelineRef.current) {
+    const position = ((event.year - actualMinYear) / timeSpan) * 100;
+    const timelineWidth = timelineRef.current.clientWidth;
+    const totalWidth = timelineRef.current.scrollWidth;
+    const scrollPosition = (position / 100) * totalWidth - timelineWidth / 2;
+
+    timelineRef.current.scrollTo({
+      left: scrollPosition,
+      behavior: "smooth",
+    });
+  }
+};
+```
+
+### Styling
+
+The timeline uses a combination of Material-UI and custom styling:
+
+```typescript
+// Container Styling
+{
+  position: 'relative',
+  height: 600,
+  bgcolor: '#FFFFFF',
+  borderRadius: 2,
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  overflow: 'hidden'
+}
+
+// Event Card Styling
+{
+  p: 2,
+  minWidth: 240,
+  maxWidth: 320,
+  borderLeft: `3px solid ${colors.border}`,
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  bgcolor: isSelected ? colors.background : '#FFFFFF',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+}
+```
+
+### Best Practices
+
+1. **Performance**
+
+   - Efficient event positioning
+   - Smooth scrolling behavior
+   - Optimized re-renders
+   - Proper cleanup of event listeners
+
+2. **User Experience**
+
+   - Clear visual hierarchy
+   - Smooth transitions
+   - Intuitive navigation
+   - Responsive design
+
+3. **Code Organization**
+
+   - Modular component structure
+   - Clear type definitions
+   - Reusable styling
+   - Consistent naming conventions
+
+4. **Accessibility**
+   - Keyboard navigation support
+   - ARIA labels for interactive elements
+   - Color contrast compliance
+   - Focus management
+
+## Social Class Feature
+
+### Social Class Analysis Component
+
+The social class analysis feature provides an in-depth examination of class dynamics in Austen's works with the following structure:
+
+```typescript
+interface SocialClass {
+  name: string;
+  description: string;
+  incomeRange: string;
+  modernEquivalent: string;
+  characteristics: string[];
+  examples: {
+    character: string;
+    novel: string;
+    context: string;
+  }[];
+}
+
+interface Character {
+  id: string;
+  name: string;
+  novel: string;
+  socialClass: "upper" | "middle" | "working";
+  occupation?: string;
+  annualIncome?: string;
+  modernEquivalent?: string;
+  description: string;
+  relationships: string[];
+}
+```
+
+#### Key Features
+
+1. **Interactive Social Pyramid**
+
+   - Visual representation of class hierarchy
+   - Hover tooltips with class information
+   - Smooth transitions and animations
+   - Income ranges and modern equivalents
+
+2. **Character Examples**
+
+   - Grid layout of character cards
+   - Class-based categorization
+   - Income and occupation details
+   - Modern equivalent values
+   - Character relationships
+
+3. **Comparative Analysis**
+
+   - Character comparison dialog
+   - Side-by-side analysis
+   - Social mobility examination
+   - Economic context
+
+4. **Content Organization**
+
+   - Expandable sections by novel
+   - Detailed character studies
+   - Modern retellings analysis
+   - Critical insights
+
+5. **Visual Design**
+   - Clean, academic layout
+   - Consistent typography
+   - Color-coded class indicators
+   - Responsive grid system
+
+### Implementation Details
+
+```typescript
+// Social Class View Structure
+const SocialClassView = () => {
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
+    null
+  );
+  const [comparisonCharacter, setComparisonCharacter] =
+    useState<Character | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Character comparison handling
+  const handleCharacterClick = (character: Character) => {
+    if (!selectedCharacter) {
+      setSelectedCharacter(character);
+    } else if (selectedCharacter.id !== character.id) {
+      setComparisonCharacter(character);
+      setDialogOpen(true);
+    }
+  };
+};
+
+// Social Pyramid Styling
+const pyramidStyles = {
+  position: "relative",
+  height: 300,
+  "& .pyramid-level": {
+    position: "absolute",
+    left: "50%",
+    transform: "translateX(-50%)",
+    transition: "all 0.2s",
+    "&:hover": {
+      transform: "translateX(-50%) scale(1.02)",
+    },
+  },
+};
+```
+
+### Content Structure
+
+1. **Pride and Prejudice Analysis**
+
+   - Upper Class Examples
+     - Mr. Darcy (£10,000 per year)
+     - Lady Catherine de Bourgh
+   - Middle & Lower Classes
+     - The Bennet Family
+     - Servants (via Longbourn)
+
+2. **Mansfield Park Analysis**
+
+   - The Privileged Circle
+     - The Bertram Family
+     - Mary and Henry Crawford
+   - The Dependent Relations
+     - Fanny Price
+     - The Price Family
+
+3. **Modern Retellings**
+   - Pride by Ibi Zoboi
+     - Zuri Benitez
+     - Darius Darcy
+   - Longbourn's Legacy
+     - Servant Perspectives
+     - Class Intersections
+
+### Integration
+
+1. **Routing**
+
+   - Dedicated `/social-class` route
+   - Integration with main navigation
+   - Error boundary protection
+   - Loading state handling
+
+2. **Navigation**
+
+   - Added to academic section
+   - Consistent button styling
+   - Clear visual grouping
+   - Smooth transitions
+
+3. **Data Management**
+
+   - TypeScript interfaces
+   - Structured content
+   - Modern equivalents
+   - Character relationships
+
+4. **UI Components**
+   - Accordion sections
+   - Material-UI integration
+   - Responsive grid layout
+   - Interactive elements
+
+### Best Practices
+
+1. **Content Organization**
+
+   - Clear hierarchical structure
+   - Detailed character analysis
+   - Historical context
+   - Modern relevance
+
+2. **User Experience**
+
+   - Intuitive navigation
+   - Interactive comparisons
+   - Visual hierarchy
+   - Responsive design
+
+3. **Performance**
+
+   - Efficient state management
+   - Optimized rendering
+   - Smooth transitions
+   - Proper cleanup
+
+4. **Accessibility**
+   - ARIA labels
+   - Keyboard navigation
+   - Color contrast
+   - Focus management
