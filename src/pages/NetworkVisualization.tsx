@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { characterNetwork } from '../data/character-network';
 import { CharacterNode, Relationship, BookNode } from '../types/character-network';
-import { Box, Typography, Paper, Grid, Card, CardContent, IconButton, Tooltip, Popper } from '@mui/material';
+import { Box, Typography, Paper, Grid, Card, CardContent, IconButton, Tooltip, Popper, Chip, Divider, Container, CircularProgress, Fade } from '@mui/material';
 import { ForceGraph2D } from 'react-force-graph';
-import { ArrowBack, Help } from '@mui/icons-material';
+import { ArrowBack, Help, ZoomIn, ZoomOut, CenterFocusStrong, Search } from '@mui/icons-material';
 import * as d3 from 'd3';
 
 interface NetworkNode {
@@ -40,12 +40,40 @@ interface TooltipState {
   y: number;
 }
 
+// Proper typing for ForceGraph methods
+interface ForceGraphMethods {
+  zoom: (k: number) => void;
+  zoomToFit: (durationMs?: number, padding?: number) => void;
+  d3Force: (forceName: string, force: any) => void;
+  getZoom: () => number;
+  centerAt: (x?: number, y?: number, durationMs?: number) => void;
+}
+
 export default function NetworkVisualization() {
   const [selectedNode, setSelectedNode] = useState<CharacterNode | BookNode | null>(null);
   const [selectedRelationships, setSelectedRelationships] = useState<Relationship[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState>({ open: false, content: '', x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const graphRef = useRef<ForceGraphMethods>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isGraphReady, setIsGraphReady] = useState(false);
+
+  // Add loading effect when data changes
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [selectedBook]);
+
+  // Track when graph is ready
+  useEffect(() => {
+    if (graphRef.current) {
+      setIsGraphReady(true);
+    }
+  }, [graphRef.current]);
 
   const handleNodeHover = useCallback((node: NetworkNode | null) => {
     if (node) {
@@ -173,6 +201,12 @@ export default function NetworkVisualization() {
     const size = node.val || 5;
     const fontSize = Math.max(12 / scale, 2);
 
+    // Add glow effect for highlighted nodes
+    if (node.id === selectedNode?.id) {
+      ctx.shadowColor = node.color || '#fff';
+      ctx.shadowBlur = 15;
+    }
+
     // Draw node
     ctx.beginPath();
     ctx.arc(node.x || 0, node.y || 0, size, 0, 2 * Math.PI);
@@ -182,6 +216,10 @@ export default function NetworkVisualization() {
     ctx.lineWidth = 2;
     ctx.stroke();
 
+    // Clear shadow effect
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+
     // Only draw labels when zoomed in enough or for book nodes
     if (scale > 0.7 || node.type === 'book') {
       const labelDistance = size + fontSize;
@@ -189,7 +227,7 @@ export default function NetworkVisualization() {
       const textWidth = ctx.measureText(node.name).width;
 
       // Semi-transparent background for better readability
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
       const padding = fontSize * 0.3;
       const backgroundHeight = fontSize + padding * 2;
 
@@ -206,7 +244,7 @@ export default function NetworkVisualization() {
       );
 
       // Draw text
-      ctx.fillStyle = '#000';
+      ctx.fillStyle = node.id === selectedNode?.id ? '#1976d2' : '#000';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(
@@ -215,7 +253,7 @@ export default function NetworkVisualization() {
         (node.y || 0) + labelDistance
       );
     }
-  }, []);
+  }, [selectedNode]);
 
   // Helper function for drawing rounded rectangles
   const roundRect = (
@@ -267,171 +305,389 @@ export default function NetworkVisualization() {
     </Box>
   );
 
+  const handleZoomIn = () => {
+    if (graphRef.current) {
+      const currentZoom = graphRef.current.getZoom();
+      graphRef.current.zoom(currentZoom * 1.5);
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (graphRef.current) {
+      const currentZoom = graphRef.current.getZoom();
+      graphRef.current.zoom(currentZoom / 1.5);
+    }
+  };
+
+  const handleCenterGraph = () => {
+    if (graphRef.current) {
+      graphRef.current.zoomToFit(400, 50);
+    }
+  };
+
   return (
     <Box sx={{
       width: '100%',
-      height: '100%',
+      height: '100vh',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      bgcolor: 'background.default',
+      overflow: 'hidden'
     }}>
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        mb: 2,
-        px: 3,
-        pt: 2
-      }}>
-        <Typography variant="h4">
-          Character Network
-        </Typography>
-        <Tooltip title={getLegendTooltip()} arrow placement="right">
-          <IconButton size="small" sx={{ ml: 2 }}>
-            <Help />
-          </IconButton>
-        </Tooltip>
-      </Box>
-
-      <Grid container spacing={0} sx={{ flex: 1, minHeight: 0 }}>
-        <Grid item xs={12} md={8}>
-          <Paper
-            elevation={3}
-            sx={{
-              height: '100%',
-              minHeight: 700,
-              position: 'relative',
-              borderRadius: 0,
-              overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            ref={containerRef}
-          >
-            {selectedBook && (
-              <Tooltip title="Return to book overview" arrow>
-                <IconButton
-                  onClick={handleBackClick}
-                  sx={{ position: 'absolute', top: 8, left: 8, zIndex: 1 }}
-                >
-                  <ArrowBack />
-                </IconButton>
-              </Tooltip>
-            )}
-            <Box sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              zIndex: 1,
-              bgcolor: 'rgba(255, 255, 255, 0.9)',
-              p: 1,
-              borderRadius: 1
+      <Container maxWidth="xl" sx={{ flex: 1, display: 'flex', flexDirection: 'column', py: 3 }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 3,
+          pb: 2,
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h4" sx={{
+              fontWeight: 500,
+              color: 'primary.main',
+              fontFamily: '"Cormorant", serif'
             }}>
-              <Typography variant="body2" color="textSecondary">
-                {!selectedBook ? 'Click a book to explore its characters' : 'Click characters to view relationships'}
-              </Typography>
-            </Box>
-            <ForceGraph2D
-              graphData={getGraphData()}
-              onNodeHover={handleNodeHover}
-              onNodeClick={handleNodeClick}
-              nodeCanvasObject={(node: NetworkNode, ctx: CanvasRenderingContext2D, scale: number) =>
-                renderNodeCanvas(node, ctx, scale)}
-              linkColor={(link: NetworkLink) => link.color}
-              linkWidth={2}
-              nodeRelSize={6}
-              width={800}
-              height={700}
-              cooldownTicks={50}
-              cooldownTime={3000}
-              linkDirectionalParticles={2}
-              linkDirectionalParticleSpeed={0.003}
-              d3AlphaDecay={0.1}
-              d3VelocityDecay={0.4}
-              minZoom={0.5}
-              maxZoom={4}
-              dagMode={selectedBook ? undefined : 'radialin'}
-              dagLevelDistance={100}
-              enablePanInteraction={true}
-              enableZoomInteraction={true}
-              onEngineStop={() => {
-                if (!selectedBook) {
-                  centerGraph(getGraphData());
-                }
-              }}
-              onNodeDragEnd={(node: NetworkNode) => {
-                if (node.x && node.y) {
-                  node.fx = node.x;
-                  node.fy = node.y;
-                }
-              }}
-              warmupTicks={100}
-              onZoom={() => centerGraph(getGraphData())}
-              centerAt={[400, 350]}
-              zoom={2}
-              enableNodeDrag={true}
-              enableZoomPanInteraction={true}
-            />
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Box sx={{
-            height: '100%',
-            minHeight: 700,
-            overflow: 'auto',
-            borderLeft: '1px solid rgba(0, 0, 0, 0.12)'
-          }}>
-            {selectedNode && (
-              <Card sx={{ boxShadow: 'none', borderRadius: 0 }}>
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
-                    {selectedNode.name}
-                  </Typography>
-                  <Typography color="textSecondary" gutterBottom>
-                    {selectedNode.type === 'book' ? `Published: ${(selectedNode as BookNode).year}` : selectedNode.novel}
-                  </Typography>
-                  <Typography variant="body1" paragraph>
-                    {selectedNode.description}
-                  </Typography>
-
-                  {selectedNode.type !== 'book' && (
-                    <>
-                      <Typography variant="body2" sx={{ mt: 2 }} color="textSecondary">
-                        Social Class: {(selectedNode as CharacterNode).class}
-                        <br />
-                        Character Role: {selectedNode.type}
-                      </Typography>
-
-                      <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
-                        Relationships
-                      </Typography>
-                      {selectedRelationships.map((rel, index) => (
-                        <Box key={index} sx={{ mt: 2, p: 2, bgcolor: 'rgba(0, 0, 0, 0.02)', borderRadius: 1 }}>
-                          <Typography variant="subtitle1" color="primary">
-                            {rel.description}
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Type: {rel.type}
-                          </Typography>
-                          <Typography variant="body2" sx={{ mt: 1 }}>
-                            Development:
-                          </Typography>
-                          <ul style={{ margin: '8px 0', paddingLeft: 20 }}>
-                            {rel.development.map((step, i) => (
-                              <li key={i}>
-                                <Typography variant="body2">{step}</Typography>
-                              </li>
-                            ))}
-                          </ul>
-                        </Box>
-                      ))}
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+              Character Network
+            </Typography>
+            <Tooltip title={getLegendTooltip()} arrow placement="right">
+              <IconButton size="small" sx={{ ml: 2 }}>
+                <Help />
+              </IconButton>
+            </Tooltip>
           </Box>
+          <Box sx={{
+            display: 'flex',
+            gap: 1,
+            bgcolor: 'background.paper',
+            p: 0.5,
+            borderRadius: 2,
+            boxShadow: 1
+          }}>
+            <Tooltip title="Zoom in" arrow>
+              <IconButton onClick={handleZoomIn} size="small">
+                <ZoomIn />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Zoom out" arrow>
+              <IconButton onClick={handleZoomOut} size="small">
+                <ZoomOut />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Center graph" arrow>
+              <IconButton onClick={handleCenterGraph} size="small">
+                <CenterFocusStrong />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+
+        <Grid container spacing={3} sx={{ flex: 1, minHeight: 0 }}>
+          <Grid item xs={12} md={8}>
+            <Paper
+              elevation={4}
+              sx={{
+                height: '100%',
+                position: 'relative',
+                borderRadius: 2,
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: '#fafafa',
+                boxShadow: theme => `0 0 20px ${theme.palette.divider}`
+              }}
+              ref={containerRef}
+            >
+              {/* Loading overlay */}
+              <Fade in={isLoading} timeout={300}>
+                <Box sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  bgcolor: 'rgba(255, 255, 255, 0.8)',
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
+                  gap: 2
+                }}>
+                  <CircularProgress />
+                  <Typography variant="body1" color="text.secondary">
+                    {selectedBook ? 'Loading character relationships...' : 'Loading books...'}
+                  </Typography>
+                </Box>
+              </Fade>
+
+              {/* Graph container */}
+              <Fade in={!isLoading && isGraphReady} timeout={500}>
+                <Box sx={{ width: '100%', height: '100%' }}>
+                  <ForceGraph2D
+                    // @ts-expect-error - type mismatch with ref
+                    ref={graphRef}
+                    graphData={getGraphData()}
+                    onNodeHover={handleNodeHover}
+                    onNodeClick={handleNodeClick}
+                    nodeCanvasObject={renderNodeCanvas}
+                    linkColor={(link: NetworkLink) => link.color}
+                    linkWidth={3}
+                    nodeRelSize={8}
+                    width={800}
+                    height={700}
+                    cooldownTicks={50}
+                    cooldownTime={3000}
+                    linkDirectionalParticles={3}
+                    linkDirectionalParticleWidth={2}
+                    linkDirectionalParticleSpeed={0.004}
+                    d3AlphaDecay={0.1}
+                    d3VelocityDecay={0.4}
+                    minZoom={0.5}
+                    maxZoom={4}
+                    dagMode={selectedBook ? undefined : 'radialin'}
+                    dagLevelDistance={100}
+                    enablePanInteraction={true}
+                    enableZoomInteraction={true}
+                    onEngineStop={() => {
+                      if (!selectedBook) {
+                        centerGraph(getGraphData());
+                      }
+                    }}
+                    onNodeDragEnd={(node: NetworkNode) => {
+                      if (node.x && node.y) {
+                        node.fx = node.x;
+                        node.fy = node.y;
+                      }
+                    }}
+                    warmupTicks={100}
+                    onZoom={(zoom: number) => {
+                      if (!selectedBook) {
+                        centerGraph(getGraphData());
+                      }
+                    }}
+                    enableNodeDrag={true}
+                    enableZoomPanInteraction={true}
+                  />
+                </Box>
+              </Fade>
+
+              {/* Controls */}
+              {!isLoading && (
+                <>
+                  {selectedBook && (
+                    <Tooltip title="Return to book overview" arrow>
+                      <IconButton
+                        onClick={handleBackClick}
+                        sx={{
+                          position: 'absolute',
+                          top: 16,
+                          left: 16,
+                          zIndex: 1,
+                          bgcolor: 'background.paper',
+                          boxShadow: 2,
+                          '&:hover': {
+                            bgcolor: 'background.paper',
+                            transform: 'scale(1.1)',
+                            transition: 'transform 0.2s'
+                          }
+                        }}
+                      >
+                        <ArrowBack />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  <Box sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                    zIndex: 1,
+                    bgcolor: 'background.paper',
+                    p: 2,
+                    borderRadius: 2,
+                    boxShadow: 2,
+                    maxWidth: 250,
+                    backdropFilter: 'blur(8px)',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    transition: 'opacity 0.3s',
+                    opacity: isGraphReady ? 1 : 0
+                  }}>
+                    <Typography variant="body2" color="text.secondary" sx={{
+                      fontStyle: 'italic',
+                      fontFamily: '"Lato", sans-serif'
+                    }}>
+                      {!selectedBook ? 'Click a book to explore its characters' : 'Click characters to view relationships'}
+                    </Typography>
+                  </Box>
+                </>
+              )}
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4} sx={{ height: '100%' }}>
+            <Paper sx={{
+              height: '100%',
+              maxHeight: 'calc(100vh - 120px)', // Account for header and padding
+              display: 'flex',
+              flexDirection: 'column',
+              borderRadius: 2,
+              bgcolor: 'background.paper',
+              boxShadow: theme => `0 0 20px ${theme.palette.divider}`,
+              position: 'sticky',
+              top: 24
+            }}>
+              <Box sx={{
+                flex: 1,
+                overflowY: 'auto',
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: theme => theme.palette.divider,
+                  borderRadius: '4px',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                  background: theme => theme.palette.action.hover,
+                }
+              }}>
+                {selectedNode ? (
+                  <Box sx={{ p: 3 }}>
+                    <Typography variant="h5" gutterBottom sx={{
+                      color: 'primary.main',
+                      fontWeight: 500,
+                      fontFamily: '"Cormorant", serif'
+                    }}>
+                      {selectedNode.name}
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+                      <Chip
+                        label={selectedNode.type === 'book' ? 'Novel' : selectedNode.type}
+                        size="small"
+                        color={selectedNode.type === 'protagonist' ? 'primary' :
+                               selectedNode.type === 'antagonist' ? 'error' : 'default'}
+                        sx={{ borderRadius: 1 }}
+                      />
+                      {selectedNode.type !== 'book' && (
+                        <Chip
+                          label={(selectedNode as CharacterNode).class}
+                          size="small"
+                          variant="outlined"
+                          sx={{ borderRadius: 1 }}
+                        />
+                      )}
+                    </Box>
+                    <Typography color="text.secondary" gutterBottom sx={{
+                      fontFamily: '"Lato", sans-serif'
+                    }}>
+                      {selectedNode.type === 'book' ? `Published: ${(selectedNode as BookNode).year}` : selectedNode.novel}
+                    </Typography>
+                    <Typography variant="body1" paragraph sx={{
+                      mt: 2,
+                      fontFamily: '"Lato", sans-serif',
+                      lineHeight: 1.7
+                    }}>
+                      {selectedNode.description}
+                    </Typography>
+
+                    {selectedNode.type !== 'book' && (
+                      <>
+                        <Divider sx={{ my: 3 }} />
+                        <Typography variant="h6" sx={{
+                          mb: 2,
+                          color: 'primary.main',
+                          fontFamily: '"Cormorant", serif'
+                        }}>
+                          Relationships
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                          {selectedRelationships.map((rel, index) => (
+                            <Box key={index} sx={{
+                              p: 2.5,
+                              bgcolor: 'background.default',
+                              borderRadius: 2,
+                              border: '1px solid',
+                              borderColor: 'divider',
+                              transition: 'transform 0.2s, box-shadow 0.2s',
+                              '&:hover': {
+                                transform: 'translateY(-2px)',
+                                boxShadow: 1
+                              }
+                            }}>
+                              <Typography variant="subtitle1" color="primary" gutterBottom sx={{
+                                fontFamily: '"Cormorant", serif',
+                                fontWeight: 600
+                              }}>
+                                {rel.description}
+                              </Typography>
+                              <Chip
+                                label={rel.type}
+                                size="small"
+                                sx={{
+                                  mb: 2,
+                                  bgcolor: rel.type === 'family' ? 'success.light' :
+                                          rel.type === 'romance' ? 'error.light' :
+                                          rel.type === 'friendship' ? 'primary.light' : 'warning.light',
+                                  color: '#fff',
+                                  borderRadius: 1,
+                                  fontFamily: '"Lato", sans-serif'
+                                }}
+                              />
+                              <Typography variant="body2" sx={{
+                                fontWeight: 500,
+                                mt: 1,
+                                fontFamily: '"Lato", sans-serif'
+                              }}>
+                                Development:
+                              </Typography>
+                              <Box component="ul" sx={{
+                                mt: 1,
+                                pl: 2,
+                                mb: 0 // Remove bottom margin from list
+                              }}>
+                                {rel.development.map((step, i) => (
+                                  <Box component="li" key={i} sx={{
+                                    mb: i === rel.development.length - 1 ? 0 : 1.5 // Remove margin from last item
+                                  }}>
+                                    <Typography variant="body2" color="text.secondary" sx={{
+                                      fontFamily: '"Lato", sans-serif',
+                                      lineHeight: 1.6
+                                    }}>
+                                      {step}
+                                    </Typography>
+                                  </Box>
+                                ))}
+                              </Box>
+                            </Box>
+                          ))}
+                        </Box>
+                      </>
+                    )}
+                  </Box>
+                ) : (
+                  <Box sx={{
+                    p: 3,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    color: 'text.secondary'
+                  }}>
+                    <Typography variant="body1" sx={{ fontStyle: 'italic' }}>
+                      Select a node to view details
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
+      </Container>
 
       <Popper
         open={tooltip.open}
@@ -447,11 +703,16 @@ export default function NetworkVisualization() {
         <Paper sx={{
           p: 2,
           maxWidth: 300,
-          bgcolor: 'rgba(255, 255, 255, 0.95)',
-          boxShadow: 3,
-          borderRadius: 1
+          bgcolor: 'background.paper',
+          boxShadow: 4,
+          borderRadius: 2,
+          border: '1px solid',
+          borderColor: 'divider',
+          backdropFilter: 'blur(8px)'
         }}>
-          <Typography variant="body2" whiteSpace="pre-line">
+          <Typography variant="body2" whiteSpace="pre-line" sx={{
+            fontFamily: '"Lato", sans-serif'
+          }}>
             {tooltip.content}
           </Typography>
         </Paper>

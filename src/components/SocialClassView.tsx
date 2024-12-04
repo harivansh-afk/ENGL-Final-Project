@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Paper, Grid, Tooltip, Card, CardContent, Chip, Dialog, DialogTitle, DialogContent } from '@mui/material';
+import { Box, Typography, Paper, Grid, Tooltip, Card, CardContent, Chip, Dialog, DialogTitle, DialogContent, Divider } from '@mui/material';
 import { SocialClass, Character } from '../types/timeline';
 
 const socialClasses: SocialClass[] = [
@@ -124,6 +124,9 @@ export default function SocialClassView() {
     } else if (selectedCharacter.id !== character.id) {
       setComparisonCharacter(character);
       setDialogOpen(true);
+    } else {
+      // Deselect if clicking the same character
+      setSelectedCharacter(null);
     }
   };
 
@@ -133,121 +136,286 @@ export default function SocialClassView() {
     setComparisonCharacter(null);
   };
 
+  // Color constants for the gradient
+  const pyramidColors = {
+    upper: {
+      start: '#4A5D52', // darker sage
+      end: '#6B7F75'    // lighter sage
+    },
+    middle: {
+      start: '#5B6E65',
+      end: '#7C8F86'
+    },
+    lower: {
+      start: '#6B7F75',
+      end: '#8C9F96'
+    }
+  };
+
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h5" gutterBottom>
-        Social Class in Austen's Novels
-      </Typography>
-
-      {/* Social Pyramid */}
-      <Box sx={{ mb: 6, position: 'relative', height: 300 }}>
-        {socialClasses.map((socialClass, index) => (
-          <Tooltip
-            key={socialClass.name}
-            title={
-              <Box>
-                <Typography variant="subtitle2">{socialClass.name}</Typography>
-                <Typography variant="body2">{socialClass.description}</Typography>
-                <Typography variant="caption">Income: {socialClass.incomeRange}</Typography>
-              </Box>
-            }
-            arrow
-          >
-            <Paper
-              elevation={3}
-              sx={{
-                position: 'absolute',
-                left: '50%',
-                width: `${100 - index * 20}%`,
-                height: 80,
-                transform: `translateX(-50%) translateY(${index * 100}px)`,
-                bgcolor: `primary.${100 + index * 100}`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  transform: `translateX(-50%) translateY(${index * 100}px) scale(1.02)`,
-                }
-              }}
-            >
-              <Typography variant="h6" color="text.primary">
-                {socialClass.name}
+    <div className="container mx-auto py-6 space-y-6">
+      <Grid container spacing={3}>
+        {/* Social Pyramid */}
+        <Grid item xs={12} md={6}>
+          <Card className="border border-sage-200 hover:border-sage-300 transition-all">
+            <CardContent className="p-6">
+              <Typography variant="h5" className="font-cormorant text-sage-900 mb-4">
+                Social Hierarchy
               </Typography>
-            </Paper>
-          </Tooltip>
-        ))}
-      </Box>
 
-      {/* Character Grid */}
-      <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-        Character Examples {selectedCharacter && '(Select another character to compare)'}
-      </Typography>
-      <Grid container spacing={2}>
-        {characters.map((character) => (
-          <Grid item xs={12} sm={6} md={4} key={character.id}>
-            <Card
-              onClick={() => handleCharacterClick(character)}
-              sx={{
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                '&:hover': {
-                  transform: 'scale(1.02)',
-                },
-                bgcolor: selectedCharacter?.id === character.id ? 'primary.50' : 'background.paper'
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {character.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  {character.novel}
-                </Typography>
-                <Chip
-                  label={character.socialClass.charAt(0).toUpperCase() + character.socialClass.slice(1)}
-                  size="small"
-                  sx={{ mb: 1 }}
-                />
-                <Typography variant="body2">
-                  Annual Income: {character.annualIncome}
-                </Typography>
-                <Typography variant="caption" color="text.secondary" display="block">
-                  Modern Equivalent: {character.modernEquivalent}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+              <Box sx={{ position: 'relative', height: 350, mb: 4 }}>
+                {socialClasses.map((socialClass, index) => {
+                  const colors = index === 0 ? pyramidColors.upper :
+                               index === 1 ? pyramidColors.middle :
+                               pyramidColors.lower;
+                  return (
+                    <Tooltip
+                      key={socialClass.name}
+                      title={
+                        <Box className="p-4 max-w-md">
+                          <Typography variant="subtitle1" className="font-cormorant text-sage-900 mb-2 font-semibold">
+                            {socialClass.name}
+                          </Typography>
+                          <Typography variant="body2" className="text-sage-700 mb-3">
+                            {socialClass.description}
+                          </Typography>
+                          <Divider className="bg-sage-200 my-3" />
+                          <div className="space-y-2">
+                            <Typography variant="caption" className="text-sage-700 block font-medium">
+                              Income Range: {socialClass.incomeRange}
+                            </Typography>
+                            <Typography variant="caption" className="text-sage-700 block font-medium">
+                              Modern Equivalent: {socialClass.modernEquivalent}
+                            </Typography>
+                          </div>
+                          <Divider className="bg-sage-200 my-3" />
+                          <div className="space-y-2">
+                            <Typography variant="caption" className="text-sage-800 font-semibold block">
+                              Key Characteristics:
+                            </Typography>
+                            <ul className="list-disc list-inside text-sage-700 text-sm space-y-1">
+                              {socialClass.characteristics.map((char, idx) => (
+                                <li key={idx}>{char}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </Box>
+                      }
+                      arrow
+                      placement="right"
+                      classes={{
+                        tooltip: "bg-white shadow-lg",
+                        arrow: "text-white"
+                      }}
+                      sx={{
+                        "& .MuiTooltip-tooltip": {
+                          backgroundColor: "white",
+                          color: "inherit",
+                          boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
+                          opacity: 1,
+                          maxWidth: "none"
+                        },
+                        "& .MuiTooltip-arrow": {
+                          color: "white",
+                          "&::before": {
+                            backgroundColor: "white",
+                            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)"
+                          }
+                        }
+                      }}
+                    >
+                      <Paper
+                        elevation={2}
+                        sx={{
+                          position: 'absolute',
+                          left: '50%',
+                          width: `${100 - index * 20}%`,
+                          height: 90,
+                          transform: `translateX(-50%) translateY(${index * 110}px)`,
+                          background: `linear-gradient(45deg, ${colors.start}, ${colors.end})`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: `translateX(-50%) translateY(${index * 110}px) scale(1.02)`,
+                            boxShadow: 3
+                          }
+                        }}
+                      >
+                        <Typography variant="h6" className="text-white font-cormorant">
+                          {socialClass.name}
+                        </Typography>
+                      </Paper>
+                    </Tooltip>
+                  );
+                })}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Character Examples */}
+        <Grid item xs={12} md={6}>
+          <Card className="border border-sage-200 hover:border-sage-300 transition-all">
+            <CardContent className="p-6">
+              <Typography variant="h5" className="font-cormorant text-sage-900 mb-4">
+                Notable Characters
+              </Typography>
+              {selectedCharacter && (
+                <div className="mb-4 p-3 bg-sage-50 border border-sage-200 rounded-lg">
+                  <Typography className="text-sage-700 text-sm">
+                    <span className="font-semibold">{selectedCharacter.name}</span> selected.
+                    Click another character to compare, or click again to deselect.
+                  </Typography>
+                </div>
+              )}
+              <div className="space-y-4">
+                {characters.map((character) => (
+                  <Card
+                    key={character.id}
+                    onClick={() => handleCharacterClick(character)}
+                    className={`
+                      border transition-all cursor-pointer
+                      ${selectedCharacter?.id === character.id
+                        ? 'border-sage-500 bg-sage-50 shadow-md transform scale-[1.02]'
+                        : 'border-sage-200 bg-white hover:border-sage-300 hover:shadow-sm hover:bg-sage-50/30'
+                      }
+                    `}
+                    sx={{
+                      position: 'relative',
+                      '&:after': selectedCharacter?.id === character.id ? {
+                        content: '""',
+                        position: 'absolute',
+                        left: -2,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: 4,
+                        height: '70%',
+                        backgroundColor: '#4A5D52',
+                        borderRadius: '0 2px 2px 0'
+                      } : {}
+                    }}
+                  >
+                    <CardContent className="p-4">
+                      <Box className="flex justify-between items-start">
+                        <div>
+                          <Typography variant="h6" className={`font-cormorant ${selectedCharacter?.id === character.id ? 'text-sage-900' : 'text-sage-800'}`}>
+                            {character.name}
+                          </Typography>
+                          <Typography variant="body2" className="text-sage-600 mb-2">
+                            {character.novel}
+                          </Typography>
+                        </div>
+                        <Chip
+                          label={character.socialClass.charAt(0).toUpperCase() + character.socialClass.slice(1)}
+                          size="small"
+                          sx={{
+                            bgcolor: character.socialClass === 'upper' ? pyramidColors.upper.start :
+                                    character.socialClass === 'middle' ? pyramidColors.middle.start :
+                                    pyramidColors.lower.start,
+                            color: 'white',
+                            fontFamily: '"Lato", sans-serif',
+                            transition: 'all 0.2s ease',
+                            transform: selectedCharacter?.id === character.id ? 'scale(1.05)' : 'scale(1)'
+                          }}
+                        />
+                      </Box>
+                      <Box className="mt-2 text-sage-700">
+                        <div className="flex justify-between text-sm">
+                          <span>Annual Income:</span>
+                          <span className="font-semibold">{character.annualIncome}</span>
+                        </div>
+                        <div className="flex justify-between text-sm text-sage-600">
+                          <span>Modern Equivalent:</span>
+                          <span>{character.modernEquivalent}</span>
+                        </div>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
 
       {/* Comparison Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <DialogTitle>Character Comparison</DialogTitle>
-        <DialogContent>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          className: "rounded-lg overflow-hidden"
+        }}
+      >
+        <DialogTitle className="bg-sage-700 text-white font-cormorant py-4">
+          Character Comparison
+        </DialogTitle>
+        <DialogContent className="p-6">
           {selectedCharacter && comparisonCharacter && (
-            <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <Typography variant="h6" gutterBottom>{selectedCharacter.name}</Typography>
-                <Typography variant="body2" gutterBottom>Novel: {selectedCharacter.novel}</Typography>
-                <Typography variant="body2" gutterBottom>Class: {selectedCharacter.socialClass}</Typography>
-                <Typography variant="body2" gutterBottom>Income: {selectedCharacter.annualIncome}</Typography>
-                <Typography variant="body2" gutterBottom>Modern: {selectedCharacter.modernEquivalent}</Typography>
-                <Typography variant="body2">{selectedCharacter.description}</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="h6" gutterBottom>{comparisonCharacter.name}</Typography>
-                <Typography variant="body2" gutterBottom>Novel: {comparisonCharacter.novel}</Typography>
-                <Typography variant="body2" gutterBottom>Class: {comparisonCharacter.socialClass}</Typography>
-                <Typography variant="body2" gutterBottom>Income: {comparisonCharacter.annualIncome}</Typography>
-                <Typography variant="body2" gutterBottom>Modern: {comparisonCharacter.modernEquivalent}</Typography>
-                <Typography variant="body2">{comparisonCharacter.description}</Typography>
-              </Grid>
+            <Grid container spacing={4}>
+              {[selectedCharacter, comparisonCharacter].map((char, index) => (
+                <Grid item xs={6} key={char.id}>
+                  <Typography variant="h6" className="font-cormorant text-sage-900 mb-3">
+                    {char.name}
+                  </Typography>
+                  <Chip
+                    label={char.socialClass.charAt(0).toUpperCase() + char.socialClass.slice(1)}
+                    size="small"
+                    sx={{
+                      bgcolor: char.socialClass === 'upper' ? pyramidColors.upper.start :
+                              char.socialClass === 'middle' ? pyramidColors.middle.start :
+                              pyramidColors.lower.start,
+                      color: 'white',
+                      fontFamily: '"Lato", sans-serif'
+                    }}
+                  />
+                  <div className="space-y-3 text-sage-700 mt-4">
+                    <div>
+                      <Typography variant="body2" className="text-sage-600 font-semibold">
+                        Novel
+                      </Typography>
+                      <Typography variant="body1">
+                        {char.novel}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography variant="body2" className="text-sage-600 font-semibold">
+                        Annual Income
+                      </Typography>
+                      <Typography variant="body1">
+                        {char.annualIncome}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography variant="body2" className="text-sage-600 font-semibold">
+                        Modern Equivalent
+                      </Typography>
+                      <Typography variant="body1">
+                        {char.modernEquivalent}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Typography variant="body2" className="text-sage-600 font-semibold">
+                        Description
+                      </Typography>
+                      <Typography variant="body1" className="text-sage-700 leading-relaxed">
+                        {char.description}
+                      </Typography>
+                    </div>
+                  </div>
+                  {index === 0 && (
+                    <Divider orientation="vertical" className="absolute right-0 top-0 bottom-0 bg-sage-200" />
+                  )}
+                </Grid>
+              ))}
             </Grid>
           )}
         </DialogContent>
       </Dialog>
-    </Box>
+    </div>
   );
 }
