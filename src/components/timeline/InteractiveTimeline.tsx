@@ -10,12 +10,12 @@ interface Props {
 
 // Define major time periods with matching category colors
 const timePeriods = [
-  { start: 1775, end: 1785, name: 'Early Life', color: 'primary.50' },
-  { start: 1786, end: 1800, name: 'Juvenilia & Early Drafts', color: 'primary.100' },
-  { start: 1801, end: 1817, name: 'Publication Years', color: 'primary.200' },
-  { start: 1818, end: 1900, name: 'Victorian Reception', color: 'warning.50' },
-  { start: 1901, end: 2000, name: '20th Century', color: 'success.50' },
-  { start: 2001, end: new Date().getFullYear(), name: 'Contemporary', color: 'success.100' }
+  { start: 1775, end: 1785, name: 'Early Life', color: 'rgba(74, 93, 82, 0.1)' },
+  { start: 1786, end: 1800, name: 'Juvenilia & Early Drafts', color: 'rgba(74, 93, 82, 0.15)' },
+  { start: 1801, end: 1817, name: 'Publication Years', color: 'rgba(74, 93, 82, 0.2)' },
+  { start: 1818, end: 1900, name: 'Victorian Reception', color: 'rgba(74, 93, 82, 0.25)' },
+  { start: 1901, end: 2000, name: '20th Century', color: 'rgba(74, 93, 82, 0.3)' },
+  { start: 2001, end: new Date().getFullYear(), name: 'Contemporary', color: 'rgba(74, 93, 82, 0.35)' }
 ];
 
 // Timeline data focused on course texts and their context
@@ -307,15 +307,25 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
   const getEventColor = (type: string) => {
     switch (type) {
       case 'works':
-        return { main: 'primary.main', light: 'primary.50' };
+        return {
+          main: '#4A5D52',
+          light: '#E5E9E7'
+        };
       case 'context':
-        return { main: 'secondary.main', light: 'secondary.50' };
+        return {
+          main: '#5B6E65',
+          light: '#D5DCD8'
+        };
       case 'legacy':
-        return { main: 'warning.main', light: 'warning.50' };
-      case 'adaptations':
-        return { main: 'success.main', light: 'success.50' };
-      default:
-        return { main: 'grey.500', light: 'grey.50' };
+        return {
+          main: '#6B7F75',
+          light: '#C5CEC9'
+        };
+      default: // adaptations
+        return {
+          main: '#7C8F86',
+          light: '#B5C0BA'
+        };
     }
   };
 
@@ -351,11 +361,12 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
             onClick={() => toggleFilter('works')}
             variant={activeFilters.includes('works') ? 'contained' : 'outlined'}
             sx={{
-              color: activeFilters.includes('works') ? 'white' : 'primary.main',
-              borderColor: 'primary.main',
+              color: activeFilters.includes('works') ? 'white' : 'sage.700',
+              borderColor: 'sage.300',
+              bgcolor: activeFilters.includes('works') ? '#4A5D52' : 'transparent',
               '&:hover': {
-                borderColor: 'primary.dark',
-                bgcolor: activeFilters.includes('works') ? 'primary.dark' : 'primary.50'
+                borderColor: 'sage.400',
+                bgcolor: activeFilters.includes('works') ? '#3A4D42' : 'sage.50'
               }
             }}
           >
@@ -365,12 +376,12 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
             onClick={() => toggleFilter('context')}
             variant={activeFilters.includes('context') ? 'contained' : 'outlined'}
             sx={{
-              color: activeFilters.includes('context') ? 'white' : 'secondary.main',
-              borderColor: 'secondary.main',
-              bgcolor: activeFilters.includes('context') ? 'secondary.main' : 'transparent',
+              color: activeFilters.includes('context') ? 'white' : 'sage.700',
+              borderColor: 'sage.300',
+              bgcolor: activeFilters.includes('context') ? '#5B6E65' : 'transparent',
               '&:hover': {
-                borderColor: 'secondary.dark',
-                bgcolor: activeFilters.includes('context') ? 'secondary.dark' : 'secondary.50'
+                borderColor: 'sage.400',
+                bgcolor: activeFilters.includes('context') ? '#4B5E55' : 'sage.50'
               }
             }}
           >
@@ -380,12 +391,12 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
             onClick={() => toggleFilter('legacy')}
             variant={activeFilters.includes('legacy') ? 'contained' : 'outlined'}
             sx={{
-              color: activeFilters.includes('legacy') ? 'white' : 'warning.main',
-              borderColor: 'warning.main',
-              bgcolor: activeFilters.includes('legacy') ? 'warning.main' : 'transparent',
+              color: activeFilters.includes('legacy') ? 'white' : 'sage.700',
+              borderColor: 'sage.300',
+              bgcolor: activeFilters.includes('legacy') ? '#6B7F75' : 'transparent',
               '&:hover': {
-                borderColor: 'warning.dark',
-                bgcolor: activeFilters.includes('legacy') ? 'warning.dark' : 'warning.50'
+                borderColor: 'sage.400',
+                bgcolor: activeFilters.includes('legacy') ? '#5B6F65' : 'sage.50'
               }
             }}
           >
@@ -395,12 +406,12 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
             onClick={() => toggleFilter('adaptations')}
             variant={activeFilters.includes('adaptations') ? 'contained' : 'outlined'}
             sx={{
-              color: activeFilters.includes('adaptations') ? 'white' : 'success.main',
-              borderColor: 'success.main',
-              bgcolor: activeFilters.includes('adaptations') ? 'success.main' : 'transparent',
+              color: activeFilters.includes('adaptations') ? 'white' : 'sage.700',
+              borderColor: 'sage.300',
+              bgcolor: activeFilters.includes('adaptations') ? '#7C8F86' : 'transparent',
               '&:hover': {
-                borderColor: 'success.dark',
-                bgcolor: activeFilters.includes('adaptations') ? 'success.dark' : 'success.50'
+                borderColor: 'sage.400',
+                bgcolor: activeFilters.includes('adaptations') ? '#6C7F76' : 'sage.50'
               }
             }}
           >
@@ -411,14 +422,14 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
 
       {/* Timeline Container */}
       <Box sx={{ position: 'relative', mt: 6 }}>
-        {/* Navigation Buttons Container */}
+        {/* Navigation Buttons */}
         <Box
           sx={{
             position: 'absolute',
-            top: 200, // Half of the timeline height (400px)
+            top: 200,
             left: 0,
             right: 0,
-            height: 0, // Zero height to not affect layout
+            height: 0,
             pointerEvents: 'none',
             zIndex: 3
           }}
@@ -431,19 +442,21 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
               top: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 3,
-              bgcolor: 'background.paper',
+              bgcolor: 'white',
               border: '1px solid',
-              borderColor: 'divider',
+              borderColor: 'sage.200',
               boxShadow: theme => `0 2px 8px ${alpha(theme.palette.common.black, 0.15)}`,
               width: 40,
               height: 40,
               pointerEvents: 'auto',
+              color: 'sage.700',
               '&:hover': {
-                bgcolor: 'grey.50',
+                bgcolor: 'sage.50',
+                borderColor: 'sage.300',
                 boxShadow: theme => `0 4px 12px ${alpha(theme.palette.common.black, 0.2)}`
               },
               '&:active': {
-                bgcolor: 'grey.100'
+                bgcolor: 'sage.100'
               }
             }}
           >
@@ -457,19 +470,21 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
               top: '50%',
               transform: 'translate(50%, -50%)',
               zIndex: 3,
-              bgcolor: 'background.paper',
+              bgcolor: 'white',
               border: '1px solid',
-              borderColor: 'divider',
+              borderColor: 'sage.200',
               boxShadow: theme => `0 2px 8px ${alpha(theme.palette.common.black, 0.15)}`,
               width: 40,
               height: 40,
               pointerEvents: 'auto',
+              color: 'sage.700',
               '&:hover': {
-                bgcolor: 'grey.50',
+                bgcolor: 'sage.50',
+                borderColor: 'sage.300',
                 boxShadow: theme => `0 4px 12px ${alpha(theme.palette.common.black, 0.2)}`
               },
               '&:active': {
-                bgcolor: 'grey.100'
+                bgcolor: 'sage.100'
               }
             }}
           >
@@ -508,18 +523,17 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
                     display: 'inline-block',
                     bgcolor: period.color,
                     border: '1px solid',
-                    borderColor: 'divider',
+                    borderColor: 'sage.200',
                     px: 2,
                     py: 0.5,
                     borderRadius: '16px',
-                    whiteSpace: 'nowrap',
-                    fontFamily: 'cormorant',
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   <Typography
                     variant="caption"
+                    className="font-cormorant text-sage-800"
                     sx={{
-                      color: theme => theme.palette.text.primary,
                       fontWeight: 500,
                       fontSize: '0.875rem'
                     }}
@@ -538,8 +552,10 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
           sx={{
             position: 'relative',
             height: 400,
-            bgcolor: 'background.paper',
+            bgcolor: 'white',
             borderRadius: 4,
+            border: '1px solid',
+            borderColor: 'sage.200',
             boxShadow: theme => `0 2px 12px ${alpha(theme.palette.common.black, 0.08)}`,
             overflow: 'hidden',
             cursor: 'pointer',
@@ -558,12 +574,11 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
               bgcolor: 'sage.400',
               borderRadius: 4,
               border: '2px solid',
-              borderColor: 'background.paper',
+              borderColor: 'white',
               '&:hover': {
                 bgcolor: 'sage.500'
               }
-            },
-            scrollBehavior: 'smooth'
+            }
           }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -571,24 +586,25 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
           onMouseLeave={handleMouseLeave}
         >
           <Box sx={{ width: '300%', height: '100%', position: 'relative' }}>
-            {/* Time Period Backgrounds */}
-            {timePeriods.map((period) => {
-              const startPos = ((period.start - actualMinYear) / timeSpan) * 100;
-              const width = ((period.end - period.start) / timeSpan) * 100;
-              return (
-                <Box
-                  key={period.name}
-                  sx={{
-                    position: 'absolute',
-                    left: `${startPos}%`,
-                    width: `${width}%`,
-                    height: '100%',
-                    bgcolor: period.color,
-                    opacity: 0.5
-                  }}
-                />
-              );
-            })}
+            {/* Single Continuous Background */}
+            <Box
+              sx={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                background: `linear-gradient(to right,
+                  rgba(74, 93, 82, 0.1) 0%,
+                  rgba(74, 93, 82, 0.15) 20%,
+                  rgba(74, 93, 82, 0.2) 40%,
+                  rgba(74, 93, 82, 0.25) 60%,
+                  rgba(74, 93, 82, 0.3) 80%,
+                  rgba(74, 93, 82, 0.35) 100%
+                )`,
+                zIndex: 0
+              }}
+            />
 
             {/* Year Markers */}
             <Box sx={{
@@ -598,7 +614,7 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
               right: 0,
               height: 40,
               display: 'flex',
-              zIndex: 2
+              zIndex: 1
             }}>
               {yearMarkers.map((year) => {
                 const isDecade = year % 10 === 0;
@@ -611,29 +627,24 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
                       transform: 'translateX(-50%)',
                       display: 'flex',
                       flexDirection: 'column',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      zIndex: 1
                     }}
                   >
                     <Box sx={{
                       width: isDecade ? 2 : 1,
                       height: isDecade ? 10 : 6,
-                      bgcolor: isDecade ? 'primary.main' : 'text.secondary',
+                      bgcolor: isDecade ? 'sage.700' : 'sage.500',
                       opacity: isDecade ? 0.8 : 0.5
                     }} />
                     <Typography
                       variant="caption"
                       sx={{
-                        color: isDecade ? 'primary.main' : 'text.secondary',
+                        color: isDecade ? 'sage.800' : 'sage.600',
                         mt: 0.5,
                         fontWeight: isDecade ? 600 : 400,
-                        bgcolor: 'rgba(255, 255, 255, 0.9)',
-                        px: 1,
-                        py: 0.25,
-                        borderRadius: 1,
                         fontSize: isDecade ? '0.75rem' : '0.7rem',
-                        boxShadow: isDecade ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                        border: isDecade ? '1px solid' : 'none',
-                        borderColor: 'primary.100'
+                        backgroundColor: 'transparent'
                       }}
                     >
                       {year}
@@ -643,18 +654,40 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
               })}
             </Box>
 
-            {/* Timeline Base Line */}
+            {/* Timeline Base Lines */}
             <Box
               sx={{
                 position: 'absolute',
                 top: '50%',
                 left: 0,
                 right: 0,
-                height: 2,
-                bgcolor: 'grey.300',
-                transform: 'translateY(-50%)'
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                transform: 'translateY(-50%)',
+                zIndex: 1
               }}
-            />
+            >
+              {/* White line */}
+              <Box
+                sx={{
+                  width: '100%',
+                  height: 2,
+                  bgcolor: 'white',
+                  position: 'absolute'
+                }}
+              />
+              {/* Sage line */}
+              <Box
+                sx={{
+                  width: '100%',
+                  height: 1,
+                  bgcolor: 'sage.300',
+                  opacity: 0.5,
+                  position: 'absolute'
+                }}
+              />
+            </Box>
 
             {/* Events */}
             {filteredEvents.map((event, index) => {
@@ -673,11 +706,12 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
                     left: `${position}%`,
                     top: `${verticalPosition}%`,
                     transform: 'translate(-50%, -50%)',
-                    zIndex: isSelected ? 2 : 1,
+                    zIndex: isSelected ? 10 : 5,
                     transition: 'all 0.3s ease',
                     cursor: 'pointer',
                     '&:hover': {
-                      transform: 'translate(-50%, -50%) scale(1.1)'
+                      transform: 'translate(-50%, -50%) scale(1.1)',
+                      zIndex: 15
                     }
                   }}
                 >
@@ -835,53 +869,48 @@ export default function InteractiveTimeline({ events = timelineEvents }: Props) 
         {/* Event Details Section */}
         {selectedEvent && (
           <Paper
+            elevation={0}
             sx={{
               p: 4,
               mt: 4,
-              bgcolor: 'background.paper',
+              bgcolor: 'white',
               borderRadius: 2,
-              boxShadow: 2,
-              transition: 'all 0.3s ease',
               border: '1px solid',
-              borderColor: 'divider'
+              borderColor: 'sage.200',
+              transition: 'all 0.3s ease'
             }}
           >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
               <Box>
-                <Typography variant="h5" gutterBottom color="primary">
+                <Typography variant="h5" gutterBottom className="font-cormorant text-sage-900">
                   {selectedEvent.title}
                 </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
+                <Typography variant="subtitle1" className="text-sage-600">
                   {selectedEvent.year}
                 </Typography>
               </Box>
               <Chip
                 label={selectedEvent.type.charAt(0).toUpperCase() + selectedEvent.type.slice(1)}
-                color={
-                  selectedEvent.type === 'works'
-                    ? 'primary'
-                    : selectedEvent.type === 'context'
-                    ? 'secondary'
-                    : selectedEvent.type === 'legacy'
-                    ? 'warning'
-                    : 'success'
-                }
                 size="small"
+                sx={{
+                  bgcolor: getEventColor(selectedEvent.type).main,
+                  color: 'white'
+                }}
               />
             </Box>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 2, borderColor: 'sage.200' }} />
 
-            <Typography variant="body1" paragraph>
+            <Typography variant="body1" paragraph className="text-sage-700">
               {selectedEvent.description}
             </Typography>
 
             {selectedEvent.significance && (
-              <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+              <Box sx={{ mt: 2, p: 2, bgcolor: 'sage.50', borderRadius: 1, border: '1px solid', borderColor: 'sage.200' }}>
+                <Typography variant="subtitle2" className="text-sage-800 font-cormorant" gutterBottom>
                   Historical Significance
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" className="text-sage-600">
                   {selectedEvent.significance}
                 </Typography>
               </Box>
