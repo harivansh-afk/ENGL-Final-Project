@@ -6,6 +6,7 @@ import Blogs from './pages/Blogs';
 import BlogPost from './pages/BlogPost/BlogPost';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import SuccessStories from './pages/SuccessStories';
+import Analysis from './pages/Analysis';
 
 // Lazy load other pages
 const Quiz = React.lazy(() => import('./pages/Quiz'));
@@ -27,7 +28,8 @@ function App() {
               <Route path="/advice" element={<Advice />} />
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/success-stories" element={<SuccessStories />} />
-              <Route path="/calculator" element={<MarketCalculator />} />
+              <Route path="/market-calculator" element={<MarketCalculator />} />
+              <Route path="/analysis" element={<Analysis />} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

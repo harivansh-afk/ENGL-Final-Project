@@ -5,8 +5,8 @@ export type VendorCategory =
   | 'catering'
   | 'music'
   | 'flowers'
-  | 'transport'
-  | 'stationery';
+  | 'matchmaking'
+  | 'modiste';
 
 export type VendorRating = {
   reputation: number;

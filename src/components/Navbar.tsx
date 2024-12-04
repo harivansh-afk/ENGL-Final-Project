@@ -1,62 +1,43 @@
 import { Link } from 'react-router-dom';
-import { Feather, Heart, BookOpen, Mail, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+import { Feather } from 'lucide-react';
 
 const Navbar = () => {
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center px-4">
-        <Link to="/" className="flex items-center space-x-2">
-          <Feather className="h-6 w-6" />
-          <span className="font-serif text-xl">Austen's Wedding Guide</span>
-        </Link>
-        <NavigationMenu className="ml-auto">
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuTrigger>Advice</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <div className="grid gap-3 p-4 w-[400px]">
-                  <NavigationMenuLink asChild>
-                    <Link to="/blogs" className="flex items-center space-x-2">
-                      <BookOpen className="h-4 w-4" />
-                      <span>Character Blogs</span>
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link to="/dear-jane" className="flex items-center space-x-2">
-                      <Mail className="h-4 w-4" />
-                      <span>Dear Jane</span>
-                    </Link>
-                  </NavigationMenuLink>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/quiz">
-                <Button variant="secondary" size="sm">
-                  <Users className="mr-2 h-4 w-4" />
-                  Quiz
-                </Button>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/success-stories">
-                <Button variant="secondary" size="sm">
-                  <Heart className="mr-2 h-4 w-4" />
-                  Success Stories
-                </Button>
-              </Link>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+    <header className="border-b bg-cream-50">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <Link to="/" className="flex items-center space-x-2">
+            <Feather className="h-6 w-6 text-sage-700" />
+            <span className="font-cormorant text-xl text-sage-900">Austen's Wedding Guide</span>
+          </Link>
+
+          <nav className="flex items-center space-x-6">
+            <Link to="/blogs" className="text-sage-700 hover:text-sage-900 transition-colors">
+              Character Blogs
+            </Link>
+            <Link to="/quiz" className="text-sage-700 hover:text-sage-900 transition-colors">
+              Bride Quiz
+            </Link>
+            <Link to="/dear-jane" className="text-sage-700 hover:text-sage-900 transition-colors">
+              Dear Jane
+            </Link>
+            <Link to="/vendors" className="text-sage-700 hover:text-sage-900 transition-colors">
+              Vendors
+            </Link>
+            <Link to="/success-stories" className="text-sage-700 hover:text-sage-900 transition-colors">
+              Success Stories
+            </Link>
+            <Link to="/market-calculator" className="text-sage-700 hover:text-sage-900 transition-colors">
+              Market Value
+            </Link>
+            <Link
+              to="/analysis"
+              className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+            >
+              Literary Analysis
+            </Link>
+          </nav>
+        </div>
       </div>
     </header>
   );

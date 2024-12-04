@@ -15,6 +15,16 @@ const Home = () => {
 
       {/* Featured Sections */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Literary Analysis */}
+        <Link to="/analysis" className="feature-card">
+          <div className="bg-sage-50 p-6 rounded-lg hover:shadow-lg transition">
+            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Literary Analysis</h2>
+            <p className="text-sage-700">
+              Explore themes, characters, and social commentary in Austen's timeless works
+            </p>
+          </div>
+        </Link>
+
         {/* Character Blogs */}
         <Link to="/blogs" className="feature-card">
           <div className="bg-sage-50 p-6 rounded-lg hover:shadow-lg transition">
@@ -64,17 +74,6 @@ const Home = () => {
             </p>
           </div>
         </Link>
-
-        {/* Featured Article */}
-        <div className="bg-cream-50 p-6 rounded-lg">
-          <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Latest from Charlotte</h2>
-          <p className="text-sage-700 mb-4">
-            "The Art of Practical Partnership: A Guide to Sensible Matches"
-          </p>
-          <Link to="/blogs/charlotte" className="text-sage-500 hover:text-sage-600">
-            Read More →
-          </Link>
-        </div>
       </div>
 
       {/* Quote Section */}
