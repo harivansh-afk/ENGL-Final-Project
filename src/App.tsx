@@ -12,7 +12,6 @@ import NetworkVisualization from './pages/NetworkVisualization';
 
 // Lazy load other pages
 const Quiz = React.lazy(() => import('./pages/Quiz'));
-const Advice = React.lazy(() => import('./pages/Advice'));
 const Vendors = React.lazy(() => import('./pages/Vendors'));
 const MarketCalculator = React.lazy(() => import('./pages/MarketCalculator'));
 
@@ -27,7 +26,6 @@ function App() {
               <Route path="/blogs" element={<Blogs />} />
               <Route path="/blogs/:id" element={<BlogPost />} />
               <Route path="/quiz" element={<Quiz />} />
-              <Route path="/advice" element={<Advice />} />
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/success-stories" element={<SuccessStories />} />
               <Route path="/market-calculator" element={<MarketCalculator />} />

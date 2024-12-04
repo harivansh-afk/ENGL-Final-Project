@@ -11,26 +11,41 @@ const Navbar = () => {
             <span className="font-cormorant text-xl text-sage-900">Austen's Wedding Guide</span>
           </Link>
 
-          <nav className="flex items-center space-x-6">
-            <Link to="/blogs" className="text-sage-700 hover:text-sage-900 transition-colors">
-              Character Blogs
-            </Link>
-            <Link to="/quiz" className="text-sage-700 hover:text-sage-900 transition-colors">
-              Bride Quiz
-            </Link>
-            <Link to="/dear-jane" className="text-sage-700 hover:text-sage-900 transition-colors">
-              Dear Jane
-            </Link>
-            <Link to="/vendors" className="text-sage-700 hover:text-sage-900 transition-colors">
-              Vendors
-            </Link>
-            <Link to="/success-stories" className="text-sage-700 hover:text-sage-900 transition-colors">
-              Success Stories
-            </Link>
-            <Link to="/market-calculator" className="text-sage-700 hover:text-sage-900 transition-colors">
-              Market Value
-            </Link>
-            <div className="flex items-center space-x-2">
+          <nav className="flex items-center">
+            <div className="flex items-center space-x-2 mr-6">
+              <Link
+                to="/blogs"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Character Blogs
+              </Link>
+              <Link
+                to="/quiz"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Bride Quiz
+              </Link>
+              <Link
+                to="/vendors"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Vendors
+              </Link>
+              <Link
+                to="/success-stories"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Success Stories
+              </Link>
+              <Link
+                to="/market-calculator"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Market Value
+              </Link>
+            </div>
+
+            <div className="flex items-center space-x-2 border-l border-sage-200 pl-6">
               <Link
                 to="/analysis"
                 className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"

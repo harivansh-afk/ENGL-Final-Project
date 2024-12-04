@@ -30,7 +30,6 @@ src/
 │   ├── Navbar.tsx
 │   ├── Pagination.tsx
 │   ├── QuoteDisplay.tsx
-│   ├── Routes.tsx
 │   ├── ShareButtons.tsx
 │   └── theme-provider.tsx
 │
@@ -38,22 +37,21 @@ src/
 │   ├── blog-posts.ts     # Character blog content
 │   ├── quotes.ts         # Austen quotes
 │   ├── quiz.ts           # Character quiz data
-│   ├── dear-jane.ts      # Advice column content
 │   ├── success-stories.ts
 │   ├── literary-analysis.ts  # Literary analysis data
+│   ├── comparative-analysis.ts # Comparative analysis data
 │   └── vendors.ts
 │
 ├── pages/
 │   ├── BlogPost/
-│   ├── Advice.tsx
 │   ├── Analysis.tsx      # Literary analysis page
 │   ├── Blogs.tsx
-│   ├── DearJane.tsx
 │   ├── Home.tsx
 │   ├── MarketCalculator.tsx
 │   ├── Quiz.tsx
 │   ├── Stories.tsx
 │   ├── SuccessStories.tsx
+│   ├── ComparativeAnalysis.tsx # Comparative analysis page
 │   └── Vendors.tsx
 ```
 
@@ -67,20 +65,22 @@ The application uses React Router for navigation with the following route struct
   <Route path="/blogs" element={<Blogs />} />
   <Route path="/blogs/:id" element={<BlogPost />} />
   <Route path="/quiz" element={<Quiz />} />
-  <Route path="/advice" element={<Advice />} />
   <Route path="/vendors" element={<Vendors />} />
   <Route path="/success-stories" element={<SuccessStories />} />
   <Route path="/market-calculator" element={<MarketCalculator />} />
   <Route path="/analysis" element={<Analysis />} />
+  <Route path="/comparative" element={<ComparativeAnalysis />} />
+  <Route path="/network" element={<NetworkVisualization />} />
 </Routes>
 ```
 
 ### Navigation Updates
 
 - Main navigation in `Navbar.tsx` includes:
-  - Primary navigation links
-  - Literary Analysis link with distinct styling
-  - Responsive design for all screen sizes
+  - Primary navigation group with consistent button styling
+  - Secondary navigation group for analysis features
+  - Visual separation between groups using border
+  - All buttons styled with sage color scheme
 - Home page features:
   - Literary Analysis card in featured sections
   - Direct link to analysis content
@@ -92,6 +92,8 @@ The application uses React Router for navigation with the following route struct
 ### Route Integration
 
 - Analysis page is directly accessible via `/analysis`
+- Comparative analysis accessible via `/comparative`
+- Character network visualization via `/network`
 - Integrated into main navigation flow
 - Maintains consistent layout and styling
 - Proper error handling and loading states
@@ -123,6 +125,8 @@ The application uses React Router for navigation with the following route struct
 - Pagination for content lists
 - Market calculator
 - **New: Literary analysis with themed tabs and novel selection**
+- **New: Comparative analysis for cross-novel exploration**
+- **New: Character network visualization**
 
 ### 4. Performance Considerations
 
@@ -297,3 +301,157 @@ const novelAnalyses = {
 5. Content management system integration
 6. **New: Additional novel analysis features**
 7. **New: Comparative analysis tools**
+
+## Character Network Feature
+
+### Interactive Graph Component
+
+The character network visualization is implemented using a force-directed graph with the following features:
+
+```typescript
+interface CharacterNode {
+  id: string;
+  name: string;
+  novel: string;
+  class: string;
+  type: "protagonist" | "antagonist" | "supporting";
+}
+
+interface GraphConfig {
+  nodeRelSize: number;
+  nodeVal: number;
+  width: number;
+  height: number;
+  staticGraph: boolean;
+  enableNodeDrag: boolean;
+  enableZoom: boolean;
+}
+```
+
+#### Key Features
+
+1. **Static Node Positioning**
+
+   - Nodes are arranged in a circular layout
+   - Fixed positions prevent unwanted movement
+   - Calculated using mathematical formulas for even distribution
+
+2. **Interaction Handling**
+
+   - Single-click node selection
+   - Debounced click handling (300ms)
+   - Click processing state management
+   - Cleanup of timeouts on unmount
+
+3. **Visual Configuration**
+
+   - Node colors based on character type:
+     - Protagonist: Green (#4CAF50)
+     - Antagonist: Red (#f44336)
+     - Supporting: Blue (#2196F3)
+   - Node size: 8 units (nodeRelSize)
+   - Link width: 2 units
+   - Link opacity: 0.6
+
+4. **Performance Optimizations**
+
+   - Disabled force simulation cooldown
+   - Zero warmup ticks
+   - Removed hover effects and tooltips
+   - Static graph configuration
+
+5. **UI Components**
+   - Main graph container (600x600px)
+   - Right-side information panel (300px width)
+   - Smooth transitions for panel visibility
+   - Responsive layout with flex container
+
+### Implementation Details
+
+```javascript
+// Node Click Handler
+const handleNodeClick = useCallback(
+  (node) => {
+    if (!node || isProcessingClick) return;
+    setIsProcessingClick(true);
+    setSelectedNode(node);
+    onNodeSelect(node);
+    // Reset after 300ms
+    clickTimeoutRef.current = setTimeout(() => {
+      setIsProcessingClick(false);
+    }, 300);
+  },
+  [onNodeSelect, isProcessingClick]
+);
+
+// Graph Configuration
+const graphConfig = {
+  staticGraph: true,
+  enableNodeDrag: false,
+  enableZoom: true,
+  minZoom: 0.5,
+  maxZoom: 2.5,
+  cooldownTime: 0,
+  warmupTicks: 0,
+  nodeLabel: null,
+  enableNodeHover: false,
+};
+```
+
+### Styling
+
+The component uses a flex layout with the following structure:
+
+```css
+// Container
+ {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  maxwidth: 1000px;
+  margin: 0 auto;
+}
+
+// Graph Container
+ {
+  width: 600px;
+  height: 600px;
+  border: 1px solid #eee;
+  position: relative;
+}
+
+// Information Panel
+ {
+  width: 300px;
+  padding: 20px;
+  backgroundcolor: #fff;
+  border: 1px solid #eee;
+  borderradius: 4px;
+  transition: opacity 0.2s ease-in-out;
+}
+```
+
+### Best Practices
+
+1. **State Management**
+
+   - Use of React hooks for state
+   - Proper cleanup of timeouts
+   - Controlled component updates
+
+2. **Performance**
+
+   - Debounced click handling
+   - Static node positioning
+   - Minimal re-renders
+
+3. **User Experience**
+
+   - Smooth transitions
+   - Clear visual feedback
+   - Responsive layout
+
+4. **Code Organization**
+   - Modular component structure
+   - Clear configuration objects
+   - Type-safe interfaces

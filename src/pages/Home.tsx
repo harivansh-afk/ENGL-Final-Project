@@ -55,16 +55,6 @@ const Home = () => {
           </div>
         </Link>
 
-        {/* Dear Jane */}
-        <Link to="/advice" className="feature-card">
-          <div className="bg-cream-100 p-6 rounded-lg hover:shadow-lg transition">
-            <h2 className="font-cormorant text-2xl text-sage-900 mb-3">Dear Jane</h2>
-            <p className="text-sage-700">
-              Seeking counsel? Let Jane's timeless wisdom guide you through modern romance
-            </p>
-          </div>
-        </Link>
-
         {/* Vendor Directory */}
         <Link to="/vendors" className="feature-card">
           <div className="bg-sage-100 p-6 rounded-lg hover:shadow-lg transition">
