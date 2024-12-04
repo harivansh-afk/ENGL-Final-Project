@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { novelAnalyses } from '../data/literary-analysis';
 import { useNavigate } from 'react-router-dom';
-import type { NovelAnalysis, ThematicElement, CharacterAnalysis, SocialCommentary, LiteraryDevice } from '../data/literary-analysis';
 import {
   Tabs,
   TabsContent,
@@ -24,6 +23,53 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { Button } from "../components/ui/button";
+
+// Define the types for our data structures
+interface ThematicElement {
+  theme: string;
+  description: string;
+  examples: {
+    quote: string;
+    source: string;
+    analysis: string;
+  }[];
+  significance: string;
+}
+
+interface CharacterAnalysis {
+  character: string;
+  role: string;
+  development: string;
+  significance: string;
+  keyQuotes: {
+    quote: string;
+    context: string;
+    analysis: string;
+  }[];
+}
+
+interface SocialCommentary {
+  topic: string;
+  analysis: string;
+  modernRelevance: string;
+  examples: string[];
+}
+
+interface LiteraryDevice {
+  device: string;
+  usage: string;
+  examples: string[];
+  effect: string;
+}
+
+interface NovelAnalysis {
+  title: string;
+  publicationYear: number;
+  mainThemes: ThematicElement[];
+  characterAnalysis: CharacterAnalysis[];
+  socialCommentary: SocialCommentary[];
+  literaryDevices: LiteraryDevice[];
+}
 
 type NovelKey = keyof typeof novelAnalyses;
 
@@ -51,19 +97,19 @@ const Analysis = () => {
             value={selectedNovel}
             onValueChange={(value: NovelKey) => setSelectedNovel(value)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full bg-white border-sage-200 hover:bg-sage-50 text-sage-900">
               <SelectValue placeholder="Select a novel" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="prideAndPrejudice">Pride and Prejudice (1813)</SelectItem>
-              <SelectItem value="senseAndSensibility">Sense and Sensibility (1811)</SelectItem>
-              <SelectItem value="northangerAbbey">Northanger Abbey (1818)</SelectItem>
-              <SelectItem value="mansfieldPark">Mansfield Park (1814)</SelectItem>
+            <SelectContent className="bg-white border-sage-200">
+              <SelectItem value="prideAndPrejudice" className="hover:bg-sage-50 cursor-pointer">Pride and Prejudice (1813)</SelectItem>
+              <SelectItem value="senseAndSensibility" className="hover:bg-sage-50 cursor-pointer">Sense and Sensibility (1811)</SelectItem>
+              <SelectItem value="northangerAbbey" className="hover:bg-sage-50 cursor-pointer">Northanger Abbey (1818)</SelectItem>
+              <SelectItem value="mansfieldPark" className="hover:bg-sage-50 cursor-pointer">Mansfield Park (1814)</SelectItem>
             </SelectContent>
           </Select>
           <Button
             variant="outline"
-            className="whitespace-nowrap"
+            className="whitespace-nowrap bg-white hover:bg-sage-50 border-sage-200 text-sage-900"
             onClick={() => navigate('/comparative')}
           >
             Compare Works
