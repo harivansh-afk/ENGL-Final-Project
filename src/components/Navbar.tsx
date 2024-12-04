@@ -30,12 +30,20 @@ const Navbar = () => {
             <Link to="/market-calculator" className="text-sage-700 hover:text-sage-900 transition-colors">
               Market Value
             </Link>
-            <Link
-              to="/analysis"
-              className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
-            >
-              Literary Analysis
-            </Link>
+            <div className="flex items-center space-x-2">
+              <Link
+                to="/analysis"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Literary Analysis
+              </Link>
+              <Link
+                to="/network"
+                className="bg-sage-100 text-sage-700 hover:bg-sage-200 px-4 py-2 rounded-md transition-colors"
+              >
+                Character Network
+              </Link>
+            </div>
           </nav>
         </div>
       </div>

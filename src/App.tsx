@@ -7,6 +7,8 @@ import BlogPost from './pages/BlogPost/BlogPost';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import SuccessStories from './pages/SuccessStories';
 import Analysis from './pages/Analysis';
+import ComparativeAnalysis from './pages/ComparativeAnalysis';
+import NetworkVisualization from './pages/NetworkVisualization';
 
 // Lazy load other pages
 const Quiz = React.lazy(() => import('./pages/Quiz'));
@@ -16,7 +18,7 @@ const MarketCalculator = React.lazy(() => import('./pages/MarketCalculator'));
 
 function App() {
   return (
-    <Router>
+    <Router basename="/">
       <MainLayout>
         <ErrorBoundary>
           <Suspense fallback={<div>Loading...</div>}>
@@ -30,6 +32,9 @@ function App() {
               <Route path="/success-stories" element={<SuccessStories />} />
               <Route path="/market-calculator" element={<MarketCalculator />} />
               <Route path="/analysis" element={<Analysis />} />
+              <Route path="/comparative" element={<ComparativeAnalysis />} />
+              <Route path="/network" element={<NetworkVisualization />} />
+              <Route path="*" element={<div>Page not found</div>} />
             </Routes>
           </Suspense>
         </ErrorBoundary>

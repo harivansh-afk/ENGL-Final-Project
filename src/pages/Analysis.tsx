@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { novelAnalyses } from '../data/literary-analysis';
+import { useNavigate } from 'react-router-dom';
+import type { NovelAnalysis, ThematicElement, CharacterAnalysis, SocialCommentary, LiteraryDevice } from '../data/literary-analysis';
 import {
   Tabs,
   TabsContent,
@@ -21,9 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { Button } from "../components/ui/button";
+
+type NovelKey = keyof typeof novelAnalyses;
 
 const Analysis = () => {
-  const [selectedNovel, setSelectedNovel] = useState('prideAndPrejudice');
+  const [selectedNovel, setSelectedNovel] = useState<NovelKey>('prideAndPrejudice');
+  const navigate = useNavigate();
   const analysis = novelAnalyses[selectedNovel];
 
   if (!analysis) {
@@ -40,10 +46,10 @@ const Analysis = () => {
         <h1 className="font-cormorant text-4xl text-sage-900">
           Literary Analysis
         </h1>
-        <div className="max-w-xs mx-auto">
+        <div className="max-w-xs mx-auto flex items-center gap-2">
           <Select
             value={selectedNovel}
-            onValueChange={setSelectedNovel}
+            onValueChange={(value: NovelKey) => setSelectedNovel(value)}
           >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a novel" />
@@ -55,6 +61,13 @@ const Analysis = () => {
               <SelectItem value="mansfieldPark">Mansfield Park (1814)</SelectItem>
             </SelectContent>
           </Select>
+          <Button
+            variant="outline"
+            className="whitespace-nowrap"
+            onClick={() => navigate('/comparative')}
+          >
+            Compare Works
+          </Button>
         </div>
         <div className="mt-4">
           <h2 className="font-cormorant text-2xl text-sage-900">{analysis.title}</h2>
@@ -73,7 +86,7 @@ const Analysis = () => {
         </TabsList>
 
         <TabsContent value="themes" className="space-y-4">
-          {analysis.mainThemes.map((theme, index) => (
+          {analysis.mainThemes.map((theme: ThematicElement, index: number) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle>{theme.theme}</CardTitle>
@@ -82,7 +95,7 @@ const Analysis = () => {
               <CardContent>
                 <ScrollArea className="h-[300px] rounded-md border p-4">
                   <div className="space-y-4">
-                    {theme.examples.map((example, i) => (
+                    {theme.examples.map((example, i: number) => (
                       <div key={i} className="space-y-2">
                         <blockquote className="border-l-2 border-sage-300 pl-4 italic">
                           "{example.quote}"
@@ -105,7 +118,7 @@ const Analysis = () => {
         </TabsContent>
 
         <TabsContent value="characters" className="space-y-4">
-          {analysis.characterAnalysis.map((character, index) => (
+          {analysis.characterAnalysis.map((character: CharacterAnalysis, index: number) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle>{character.character}</CardTitle>
@@ -124,7 +137,7 @@ const Analysis = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-sage-900">Key Quotes</h4>
-                      {character.keyQuotes.map((quote, i) => (
+                      {character.keyQuotes.map((quote, i: number) => (
                         <div key={i} className="mt-2 space-y-2">
                           <blockquote className="border-l-2 border-sage-300 pl-4 italic">
                             "{quote.quote}"
@@ -144,7 +157,7 @@ const Analysis = () => {
         </TabsContent>
 
         <TabsContent value="social" className="space-y-4">
-          {analysis.socialCommentary.map((topic, index) => (
+          {analysis.socialCommentary.map((topic: SocialCommentary, index: number) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle>{topic.topic}</CardTitle>
@@ -163,7 +176,7 @@ const Analysis = () => {
                     <div>
                       <h4 className="font-semibold text-sage-900">Examples</h4>
                       <ul className="list-disc list-inside text-sage-700">
-                        {topic.examples.map((example, i) => (
+                        {topic.examples.map((example: string, i: number) => (
                           <li key={i}>{example}</li>
                         ))}
                       </ul>
@@ -176,7 +189,7 @@ const Analysis = () => {
         </TabsContent>
 
         <TabsContent value="literary" className="space-y-4">
-          {analysis.literaryDevices.map((device, index) => (
+          {analysis.literaryDevices.map((device: LiteraryDevice, index: number) => (
             <Card key={index}>
               <CardHeader>
                 <CardTitle>{device.device}</CardTitle>
@@ -191,7 +204,7 @@ const Analysis = () => {
                     <div>
                       <h4 className="font-semibold text-sage-900">Examples</h4>
                       <ul className="list-disc list-inside text-sage-700">
-                        {device.examples.map((example, i) => (
+                        {device.examples.map((example: string, i: number) => (
                           <li key={i}>{example}</li>
                         ))}
                       </ul>
