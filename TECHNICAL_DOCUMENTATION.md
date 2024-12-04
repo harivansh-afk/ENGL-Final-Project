@@ -1,5 +1,26 @@
 # Technical Documentation - ENGL 2502: Jane Austen
 
+## Recent Changes
+
+### Character Blogs Removal (Latest Update)
+
+- Removed character blogs feature completely
+- Deleted related files:
+  - `src/data/blog-posts.ts`
+  - `src/data/blogPosts.ts`
+  - `src/pages/Blogs.tsx`
+  - `src/components/BlogPost.tsx`
+  - `src/pages/BlogPost/BlogPost.tsx`
+  - `src/types/blog.ts`
+- Updated navigation:
+  - Removed blog routes from routing configuration
+  - Removed "Character Blogs" from navigation menu
+  - Removed Character Insights section from homepage
+- Cleaned up dependencies:
+  - Removed unused imports
+  - Fixed linter errors
+  - Removed blog-related types from `src/types/index.ts`
+
 ## Project Overview
 
 A React-based academic web application focused on analyzing Jane Austen's works, themes, and their modern relevance. The project combines literary analysis with interactive features to provide deep insights into Austen's novels and their contemporary interpretations.
@@ -37,45 +58,28 @@ src/
 │   ├── Navbar.tsx
 │   ├── Pagination.tsx
 │   └── theme-provider.tsx
-│
-├── data/
-│   ├── novels/          # Novel-specific content
-│   │   ├── northanger-abbey.ts
-│   │   ├── sense-and-sensibility.ts
-│   │   ├── pride-and-prejudice.ts
-│   │   └── mansfield-park.ts
-│   ├── analysis/        # Analysis data
-│   │   ├── themes.ts
-│   │   ├── characters.ts
-│   │   └── social-class.ts
-│   ├── contemporary/    # Modern retellings data
-│   │   ├── pride.ts     # Pride by Ibi Zoboi
-│   │   └── longbourn.ts # Longbourn by Jo Baker
-│   └── timeline.ts      # Chronological data
-│
-├── pages/
-│   ├── novels/          # Individual novel pages
-│   │   ├── NorthangerAbbey.tsx
-│   │   ├── SenseAndSensibility.tsx
-│   │   ├── PrideAndPrejudice.tsx
-│   │   └── MansfieldPark.tsx
-│   ├── Analysis.tsx     # Literary analysis page
-│   ├── Characters.tsx   # Character studies
-│   ├── Contemporary.tsx # Modern retellings
-│   ├── Network.tsx      # Character network
-│   ├── Timeline.tsx     # Interactive timeline
-│   └── SocialClass.tsx  # Social class analysis
 ```
 
 ## Navigation Structure
 
-The application uses a new academically-focused navigation structure:
+The application uses a focused academic navigation structure:
 
 ### Primary Navigation
 
 - Literary Analysis
 - Novel Studies
 - Character Studies
+- Quiz
+- Vendors
+- Success Stories
+- Market Calculator
+
+### Analysis Navigation
+
+- Literary Analysis
+- Character Network
+- Timeline
+- Social Class
 
 ### Course Novels (Norton Critical Editions)
 

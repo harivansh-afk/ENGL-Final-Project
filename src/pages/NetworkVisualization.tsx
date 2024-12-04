@@ -282,7 +282,7 @@ export default function NetworkVisualization() {
         pt: 2
       }}>
         <Typography variant="h4">
-          Character Network & Timeline
+          Character Network
         </Typography>
         <Tooltip title={getLegendTooltip()} arrow placement="right">
           <IconButton size="small" sx={{ ml: 2 }}>

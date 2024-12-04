@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { name: 'Character Blogs', path: '/blogs' },
   { name: 'Bride Quiz', path: '/quiz' },
   { name: 'Vendors', path: '/vendors' },
   { name: 'Success Stories', path: '/success-stories' },

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, BookOpen, Users, Heart, PenTool, Calendar, BookMarked } from 'lucide-react';
+import { ArrowRight, BookOpen, Heart, PenTool, Calendar, BookMarked } from 'lucide-react';
 
 const Home = () => {
   return (
@@ -73,17 +73,6 @@ const Home = () => {
             </p>
             <Link to="/analysis" className="text-sage-600 hover:text-sage-800 inline-flex items-center">
               Learn More <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="bg-white p-8 rounded-xl shadow-sm border border-sage-100 hover:shadow-md transition">
-            <Users className="h-10 w-10 text-sage-600 mb-4" />
-            <h3 className="font-cormorant text-2xl text-sage-900 mb-3">Character Insights</h3>
-            <p className="text-sage-700 mb-4">
-              Meet Austen's memorable characters through their blogs, sharing timeless advice on love and marriage.
-            </p>
-            <Link to="/blogs" className="text-sage-600 hover:text-sage-800 inline-flex items-center">
-              Read Blogs <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </div>
 

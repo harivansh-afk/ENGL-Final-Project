@@ -2,8 +2,6 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import Home from './pages/Home';
-import Blogs from './pages/Blogs';
-import BlogPost from './pages/BlogPost/BlogPost';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import SuccessStories from './pages/SuccessStories';
 import Analysis from './pages/Analysis';
@@ -25,8 +23,6 @@ function App() {
           <Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/blogs" element={<Blogs />} />
-              <Route path="/blogs/:id" element={<BlogPost />} />
               <Route path="/quiz" element={<Quiz />} />
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/success-stories" element={<SuccessStories />} />
