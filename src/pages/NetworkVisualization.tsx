@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { characterNetwork } from '../data/character-network';
 import { CharacterNode, Relationship, BookNode } from '../types/character-network';
 import { Box, Typography, Paper, Grid, IconButton, Tooltip, Chip, Divider, Container, CircularProgress, Fade } from '@mui/material';
@@ -35,9 +35,14 @@ interface ForceGraphMethods {
   d3Force: (forceName: string, force?: d3.Force<d3.SimulationNodeDatum, undefined>) => void;
   d3ReheatSimulation: () => void;
   getZoom: () => number;
+  emitParticle: (particle: any) => void;
+  pauseAnimation: () => void;
+  resumeAnimation: () => void;
+  centerAt: (x?: number, y?: number, duration?: number) => void;
+  width: number;
+  height: number;
+  graphData: () => { nodes: NetworkNode[]; links: NetworkLink[] };
 }
-
-type ForceGraphInstance = ForceGraphMethods;
 
 // Add sage theme colors after the interface definitions
 const sageColors = {
@@ -79,7 +84,7 @@ export default function NetworkVisualization() {
   const [selectedRelationships, setSelectedRelationships] = useState<Relationship[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<ForceGraphInstance>(null);
+  const graphRef = useRef<ForceGraphMethods>();
   const [isLoading, setIsLoading] = useState(true);
   const [isGraphReady, setIsGraphReady] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
@@ -166,24 +171,22 @@ export default function NetworkVisualization() {
       const bookName = characterNetwork.books.find(b => b.id === selectedBook)?.name;
       const nodes = characterNetwork.nodes
         .filter(node => node.novel === bookName)
-        .map((node, idx, arr) => {
-          // Create a circular layout with more spacing
+        .map((currentNode, idx, arr) => {
           const angle = (idx / arr.length) * 2 * Math.PI;
-          // Increase radius for better spacing
           const radius = Math.min(dimensions.width, dimensions.height) * 0.35;
 
           const x = dimensions.width / 2 + radius * Math.cos(angle);
           const y = dimensions.height / 2 + radius * Math.sin(angle);
 
           return {
-            ...node,
+            ...currentNode,
             val: 10,
             x,
             y,
             fx: x,
             fy: y,
-            color: node.type === 'protagonist' ? sageColors.primary.start :
-                   node.type === 'antagonist' ? sageColors.secondary.start :
+            color: currentNode.type === 'protagonist' ? sageColors.primary.start :
+                   currentNode.type === 'antagonist' ? sageColors.secondary.start :
                    sageColors.tertiary.start
           } as NetworkNode;
         });
@@ -534,7 +537,7 @@ export default function NetworkVisualization() {
               <Fade in={!isLoading && isGraphReady} timeout={500}>
                 <Box sx={{ width: '100%', height: '100%' }}>
                   <ForceGraph2D
-                    ref={graphRef}
+                    ref={graphRef as any}
                     graphData={getGraphData()}
                     onNodeClick={handleNodeClick}
                     nodeCanvasObject={renderNodeCanvas}
@@ -557,7 +560,7 @@ export default function NetworkVisualization() {
                       }
                     }}
                     warmupTicks={0}
-                    nodeLabel={(node: NetworkNode) => ''}
+                    nodeLabel={() => ''}
                     linkCurvature={0.3}
                     linkDirectionalParticles={0}
                     onEngineStop={() => {

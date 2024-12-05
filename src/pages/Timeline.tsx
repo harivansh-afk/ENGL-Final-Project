@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography, Paper, Grid, Chip } from '@mui/material';
 import { TimelineEvent } from '../types/timeline';
 import InteractiveTimeline from '../components/timeline/InteractiveTimeline';

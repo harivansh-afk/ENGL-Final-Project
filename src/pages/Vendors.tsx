@@ -13,8 +13,8 @@ const CATEGORIES: VendorCategory[] = [
   'catering',
   'music',
   'flowers',
-  'transport',
-  'stationery'
+  'matchmaking',
+  'modiste'
 ];
 
 const LOCATIONS = Array.from(

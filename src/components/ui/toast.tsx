@@ -20,11 +20,15 @@ const ToastViewport = React.forwardRef<
 ));
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
+type ToastProps = React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> & {
+  variant?: 'default' | 'destructive';
+};
+
+type ToastActionElement = React.ReactElement<typeof ToastPrimitives.Action>;
+
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> & {
-    variant?: 'default' | 'destructive';
-  }
+  ToastProps
 >(({ className, variant = 'default', ...props }, ref) => {
   return (
     <ToastPrimitives.Root
@@ -84,6 +88,8 @@ const ToastDescription = React.forwardRef<
 ToastDescription.displayName = ToastPrimitives.Description.displayName;
 
 export {
+  type ToastProps,
+  type ToastActionElement,
   ToastProvider,
   ToastViewport,
   Toast,

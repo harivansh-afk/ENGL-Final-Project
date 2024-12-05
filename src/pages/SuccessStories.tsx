@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Heart, MapPin, Calendar } from 'lucide-react';
 import { successStories, SuccessStory } from '@/data/success-stories';
-import { cn } from '@/lib/utils';
 
 const StoryModal = ({ story, onClose }: { story: SuccessStory; onClose: () => void }) => {
   return (
