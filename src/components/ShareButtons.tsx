@@ -1,14 +1,11 @@
 import React from 'react';
-import { BlogPost } from '../data/blogPosts';
 
 interface ShareButtonsProps {
-  post: BlogPost;
+  title: string;
+  url?: string;
 }
 
-export const ShareButtons: React.FC<ShareButtonsProps> = ({ post }) => {
-  const url = window.location.href;
-  const title = `Check out ${post.character}'s blog post: ${post.title}`;
-
+export const ShareButtons: React.FC<ShareButtonsProps> = ({ title, url = window.location.href }) => {
   const shareLinks = [
     {
       name: 'Twitter',

@@ -5,6 +5,8 @@ export type VendorCategory =
   | 'catering'
   | 'music'
   | 'flowers'
+  | 'transport'
+  | 'stationery'
   | 'matchmaking'
   | 'modiste';
 
