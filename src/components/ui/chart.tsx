@@ -106,7 +106,7 @@ ${colorConfig
 const ChartTooltip = RechartsPrimitive.Tooltip;
 
 interface PayloadItem {
-  dataKey?: string;
+  dataKey?: string | number;
   name?: string;
   value?: number;
   payload?: {
@@ -125,7 +125,8 @@ interface CustomTooltipProps extends Omit<TooltipProps<ValueType, NameType>, 'fo
   labelKey?: string;
   labelClassName?: string;
   color?: string;
-  formatter?: (value: ValueType, name: string, props: PayloadItem, index: number, payload: PayloadItem) => React.ReactNode;
+  formatter?: (value: ValueType, name: string, props: PayloadItem, index: number, payload: PayloadItem[]) => React.ReactNode;
+  payload?: PayloadItem[];
 }
 
 const getPayloadConfigFromPayload = (config: ChartConfig, payload: PayloadItem, key: string) => {
@@ -205,7 +206,7 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, CustomTooltipProps>
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {payload.map((item: PayloadItem, index: number) => {
+          {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || 'value'}`;
             const itemConfig = getPayloadConfigFromPayload(config, item, key);
             const indicatorColor = color || (item.payload?.fill || item.color);
@@ -219,7 +220,7 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, CustomTooltipProps>
                 )}
               >
                 {formatter && item?.value !== undefined && item.name ? (
-                  formatter(item.value, item.name, item, index, item)
+                  formatter(item.value, item.name, item, index, payload)
                 ) : (
                   <>
                     {itemConfig?.icon ? (

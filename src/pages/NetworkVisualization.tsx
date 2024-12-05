@@ -2,11 +2,12 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 import { characterNetwork } from '../data/character-network';
 import { CharacterNode, Relationship, BookNode } from '../types/character-network';
 import { Box, Typography, Paper, Grid, IconButton, Tooltip, Chip, Divider, Container, CircularProgress, Fade } from '@mui/material';
-import { ForceGraph2D, ForceGraphMethods } from 'react-force-graph';
+import { ForceGraph2D as ForceGraph } from 'react-force-graph';
 import { ArrowBack, Help, ZoomIn, ZoomOut, CenterFocusStrong } from '@mui/icons-material';
 import * as d3 from 'd3';
 
-interface NetworkNode extends d3.SimulationNodeDatum {
+// Base node interface extending SimulationNodeDatum
+interface BaseNetworkNode extends d3.SimulationNodeDatum {
   id: string;
   name: string;
   type: 'protagonist' | 'antagonist' | 'supporting' | 'book' | 'character';
@@ -21,23 +22,37 @@ interface NetworkNode extends d3.SimulationNodeDatum {
   fy?: number;
 }
 
-interface NetworkLink {
-  source: string;
-  target: string;
+// Book-specific node interface
+interface NetworkBookNode extends BaseNetworkNode {
+  type: 'book';
+  year: string;
+}
+
+// Character-specific node interface
+interface NetworkCharacterNode extends BaseNetworkNode {
+  type: 'protagonist' | 'antagonist' | 'supporting' | 'character';
+}
+
+// Union type for all possible node types
+type NetworkNode = NetworkBookNode | NetworkCharacterNode;
+
+interface NetworkLink extends d3.SimulationLinkDatum<NetworkNode> {
+  source: string | NetworkNode;
+  target: string | NetworkNode;
   type: string;
   color: string;
 }
 
 // Proper typing for ForceGraph methods
-interface ForceGraphMethods {
+interface ForceGraphMethods<NodeType extends d3.SimulationNodeDatum = NetworkNode, LinkType extends d3.SimulationLinkDatum<NodeType> = NetworkLink> {
   zoom: (k?: number) => number;
   zoomToFit: (duration?: number, padding?: number) => void;
-  d3Force: (forceName: string, force?: d3.Force<d3.SimulationNodeDatum, undefined>) => void;
+  d3Force: (forceName: string, force?: d3.Force<NodeType, LinkType>) => void;
   d3ReheatSimulation: () => void;
   getZoom: () => number;
 }
 
-type ForceGraphInstance = ForceGraphMethods;
+type ForceGraphInstance = ForceGraphMethods<NetworkNode, NetworkLink>;
 
 // Add sage theme colors after the interface definitions
 const sageColors = {
@@ -75,11 +90,11 @@ const getPentagonPoint = (index: number, total: number, radius: number, centerX:
 };
 
 export default function NetworkVisualization() {
-  const [selectedNode, setSelectedNode] = useState<CharacterNode | BookNode | null>(null);
+  const [selectedNode, setSelectedNode] = useState<NetworkNode | null>(null);
   const [selectedRelationships, setSelectedRelationships] = useState<Relationship[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const fgRef = useRef<ForceGraphMethods>(null);
+  const fgRef = useRef<ForceGraphMethods<NetworkNode, NetworkLink>>();
   const [isLoading, setIsLoading] = useState(true);
   const [isGraphReady, setIsGraphReady] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
@@ -118,41 +133,27 @@ export default function NetworkVisualization() {
   }, []);
 
   // Update the node interaction handlers
-  const handleNodeClick = (node: NetworkNode) => {
-    // Book node click
+  const handleNodeClick = useCallback((node: NetworkNode) => {
     if (node.type === 'book') {
-      const bookNode = characterNetwork.books.find(b => b.id === node.id);
-      if (bookNode) {
-        // Update all states synchronously
-        setSelectedBook(node.id);
-        setSelectedNode(bookNode);
-        setSelectedRelationships([]);
-
-        // Trigger force simulation update after state changes
-        requestAnimationFrame(() => {
-          if (fgRef.current) {
-            fgRef.current.d3ReheatSimulation();
-          }
-        });
-      }
-      return;
+      const bookNode: NetworkBookNode = {
+        ...node,
+        year: (node as NetworkBookNode).year
+      };
+      setSelectedBook(node.id);
+      setSelectedNode(bookNode);
+      setSelectedRelationships([]);
+    } else {
+      const characterNode: NetworkCharacterNode = {
+        ...node,
+        type: node.type as 'protagonist' | 'antagonist' | 'supporting' | 'character'
+      };
+      const relations = characterNetwork.relationships.filter(
+        (rel) => rel.source === node.id || rel.target === node.id
+      );
+      setSelectedNode(characterNode);
+      setSelectedRelationships(relations);
     }
-
-    // Character node click - only process if we're in a book view
-    if (selectedBook) {
-      const characterNode = characterNetwork.nodes.find(n => n.id === node.id);
-      if (characterNode) {
-        // Get relationships first
-        const relations = characterNetwork.relationships.filter(
-          r => r.source === node.id || r.target === node.id
-        );
-
-        // Update states synchronously
-        setSelectedNode(characterNode);
-        setSelectedRelationships(relations);
-      }
-    }
-  };
+  }, []);
 
   const handleBackClick = () => {
     setSelectedBook(null);
@@ -533,7 +534,7 @@ export default function NetworkVisualization() {
               {/* Graph container */}
               <Fade in={!isLoading && isGraphReady} timeout={500}>
                 <Box sx={{ width: '100%', height: '100%' }}>
-                  <ForceGraph2D
+                  <ForceGraph
                     ref={fgRef}
                     graphData={getGraphData()}
                     onNodeClick={handleNodeClick}
