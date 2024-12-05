@@ -113,45 +113,54 @@ const Home = () => {
           Explore Our Features
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-xl shadow-md border border-sage-100 hover:shadow-lg transition-all transform hover:-translate-y-1">
-            <BookOpen className="h-12 w-12 text-sage-600 mb-4" />
+          <div className="bg-white/90 backdrop-blur-sm p-8 rounded-xl border border-sage-100 shadow-lg transform hover:-translate-y-1 transition-all flex flex-col">
+            <div className="bg-sage-50/50 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+              <BookOpen className="h-8 w-8 text-sage-600" />
+            </div>
             <h3 className="font-cormorant text-2xl text-sage-900 mb-3">Literary Analysis</h3>
-            <p className="text-sage-700 mb-4">
+            <p className="text-sage-700 mb-6 flex-grow">
               Deep dive into Austen's works, exploring themes of marriage, social class, and romance.
             </p>
             <Link
               to="/analysis"
-              className="inline-flex items-center px-6 py-3 bg-sage-50 text-sage-700 rounded-lg hover:bg-sage-100 transition-all"
+              className="inline-flex items-center justify-center px-6 py-3 bg-sage-600 text-white rounded-lg hover:bg-sage-700 transition-all group"
             >
-              Start Analysis <ArrowRight className="ml-2 h-4 w-4" />
+              Start Analysis
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-md border border-sage-100 hover:shadow-lg transition-all transform hover:-translate-y-1">
-            <Users className="h-12 w-12 text-sage-600 mb-4" />
+          <div className="bg-white/90 backdrop-blur-sm p-8 rounded-xl border border-sage-100 shadow-lg transform hover:-translate-y-1 transition-all flex flex-col">
+            <div className="bg-sage-50/50 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+              <Users className="h-8 w-8 text-sage-600" />
+            </div>
             <h3 className="font-cormorant text-2xl text-sage-900 mb-3">Social Class Study</h3>
-            <p className="text-sage-700 mb-4">
+            <p className="text-sage-700 mb-6 flex-grow">
               Understand the social dynamics and class structures in Austen's world.
             </p>
             <Link
               to="/social-class"
-              className="inline-flex items-center px-6 py-3 bg-sage-50 text-sage-700 rounded-lg hover:bg-sage-100 transition-all"
+              className="inline-flex items-center justify-center px-6 py-3 bg-sage-600 text-white rounded-lg hover:bg-sage-700 transition-all group"
             >
-              Study Society <ArrowRight className="ml-2 h-4 w-4" />
+              Study Society
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
-          <div className="bg-white p-8 rounded-xl shadow-md border border-sage-100 hover:shadow-lg transition-all transform hover:-translate-y-1">
-            <Store className="h-12 w-12 text-sage-600 mb-4" />
+          <div className="bg-white/90 backdrop-blur-sm p-8 rounded-xl border border-sage-100 shadow-lg transform hover:-translate-y-1 transition-all flex flex-col">
+            <div className="bg-sage-50/50 rounded-full w-16 h-16 flex items-center justify-center mb-6">
+              <Store className="h-8 w-8 text-sage-600" />
+            </div>
             <h3 className="font-cormorant text-2xl text-sage-900 mb-3">Wedding Vendors</h3>
-            <p className="text-sage-700 mb-4">
+            <p className="text-sage-700 mb-6 flex-grow">
               Discover curated vendors who bring Austen's elegance to modern weddings.
             </p>
             <Link
               to="/vendors"
-              className="inline-flex items-center px-6 py-3 bg-sage-50 text-sage-700 rounded-lg hover:bg-sage-100 transition-all"
+              className="inline-flex items-center justify-center px-6 py-3 bg-sage-600 text-white rounded-lg hover:bg-sage-700 transition-all group"
             >
-              Meet Vendors <ArrowRight className="ml-2 h-4 w-4" />
+              Meet Vendors
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         </div>
