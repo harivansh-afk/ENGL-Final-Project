@@ -62,7 +62,7 @@ interface LiteraryDevice {
   effect: string;
 }
 
-export interface NovelAnalysis {
+interface NovelAnalysis {
   title: string;
   publicationYear: number;
   mainThemes: ThematicElement[];
