@@ -27,7 +27,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Feather className="h-6 w-6 text-sage-700" />
-            <span className="font-cormorant text-xl text-sage-900">Austen's Wedding Guide</span>
+            <span className="font-cormorant text-xl text-sage-900">Guide To Austen</span>
           </Link>
 
           {/* Mobile menu button */}
