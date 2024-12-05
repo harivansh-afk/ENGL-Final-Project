@@ -62,7 +62,7 @@ interface LiteraryDevice {
   effect: string;
 }
 
-interface NovelAnalysis {
+export interface NovelAnalysis {
   title: string;
   publicationYear: number;
   mainThemes: ThematicElement[];
@@ -76,7 +76,7 @@ type NovelKey = keyof typeof novelAnalyses;
 const Analysis = () => {
   const [selectedNovel, setSelectedNovel] = useState<NovelKey>('prideAndPrejudice');
   const navigate = useNavigate();
-  const analysis = novelAnalyses[selectedNovel];
+  const analysis: NovelAnalysis = novelAnalyses[selectedNovel];
 
   if (!analysis) {
     return (

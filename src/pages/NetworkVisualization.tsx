@@ -28,20 +28,12 @@ interface NetworkLink {
   color: string;
 }
 
-// Proper typing for ForceGraph methods
-interface ForceGraphMethods {
-  zoom: (k?: number) => number;
-  zoomToFit: (duration?: number, padding?: number) => void;
+interface ForceGraphInstance {
   d3Force: (forceName: string, force?: d3.Force<d3.SimulationNodeDatum, undefined>) => void;
   d3ReheatSimulation: () => void;
-  getZoom: () => number;
-  emitParticle: (particle: any) => void;
-  pauseAnimation: () => void;
-  resumeAnimation: () => void;
+  zoom: (k?: number) => number;
+  zoomToFit: (duration?: number, padding?: number) => void;
   centerAt: (x?: number, y?: number, duration?: number) => void;
-  width: number;
-  height: number;
-  graphData: () => { nodes: NetworkNode[]; links: NetworkLink[] };
 }
 
 // Add sage theme colors after the interface definitions
@@ -84,7 +76,7 @@ export default function NetworkVisualization() {
   const [selectedRelationships, setSelectedRelationships] = useState<Relationship[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<ForceGraphMethods>();
+  const graphRef = useRef<ForceGraphInstance>();
   const [isLoading, setIsLoading] = useState(true);
   const [isGraphReady, setIsGraphReady] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
