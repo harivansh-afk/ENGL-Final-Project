@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Typography, Paper, Grid, Tooltip, Card, CardContent, Chip, Dialog, DialogTitle, DialogContent, Divider } from '@mui/material';
 import { SocialClass, Character } from '../types/timeline';
 

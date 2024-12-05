@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { characterNetwork } from '../data/character-network';
 import { CharacterNode, Relationship, BookNode } from '../types/character-network';
 import { Box, Typography, Paper, Grid, IconButton, Tooltip, Chip, Divider, Container, CircularProgress, Fade } from '@mui/material';
-import { ForceGraph2D } from 'react-force-graph';
+import { ForceGraph2D, ForceGraphMethods } from 'react-force-graph';
 import { ArrowBack, Help, ZoomIn, ZoomOut, CenterFocusStrong } from '@mui/icons-material';
 import * as d3 from 'd3';
 
@@ -79,7 +79,7 @@ export default function NetworkVisualization() {
   const [selectedRelationships, setSelectedRelationships] = useState<Relationship[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<ForceGraphInstance>(null);
+  const fgRef = useRef<ForceGraphMethods>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGraphReady, setIsGraphReady] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
@@ -95,10 +95,10 @@ export default function NetworkVisualization() {
 
   // Track when graph is ready
   useEffect(() => {
-    if (graphRef.current) {
+    if (fgRef.current) {
       setIsGraphReady(true);
     }
-  }, [graphRef.current]);
+  }, [fgRef.current]);
 
   // Add a useEffect to handle container resizing
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function NetworkVisualization() {
   }, []);
 
   // Update the node interaction handlers
-  const handleNodeClick = useCallback((node: NetworkNode) => {
+  const handleNodeClick = (node: NetworkNode) => {
     // Book node click
     if (node.type === 'book') {
       const bookNode = characterNetwork.books.find(b => b.id === node.id);
@@ -130,8 +130,8 @@ export default function NetworkVisualization() {
 
         // Trigger force simulation update after state changes
         requestAnimationFrame(() => {
-          if (graphRef.current) {
-            graphRef.current.d3ReheatSimulation();
+          if (fgRef.current) {
+            fgRef.current.d3ReheatSimulation();
           }
         });
       }
@@ -152,7 +152,7 @@ export default function NetworkVisualization() {
         setSelectedRelationships(relations);
       }
     }
-  }, [selectedBook]);
+  };
 
   const handleBackClick = () => {
     setSelectedBook(null);
@@ -377,49 +377,49 @@ export default function NetworkVisualization() {
   );
 
   const handleZoomIn = () => {
-    if (graphRef.current) {
-      const currentZoom = graphRef.current.zoom();
-      graphRef.current.zoom(currentZoom * 1.2);
+    if (fgRef.current) {
+      const currentZoom = fgRef.current.zoom();
+      fgRef.current.zoom(currentZoom * 1.2);
     }
   };
 
   const handleZoomOut = () => {
-    if (graphRef.current) {
-      const currentZoom = graphRef.current.zoom();
-      graphRef.current.zoom(currentZoom / 1.2);
+    if (fgRef.current) {
+      const currentZoom = fgRef.current.zoom();
+      fgRef.current.zoom(currentZoom / 1.2);
     }
   };
 
   const handleCenterGraph = () => {
-    if (graphRef.current) {
-      graphRef.current.zoomToFit(400);
+    if (fgRef.current) {
+      fgRef.current.zoomToFit(400);
     }
   };
 
   useEffect(() => {
-    if (graphRef.current) {
+    if (fgRef.current) {
       // Clear existing forces
-      graphRef.current.d3Force('charge', undefined);
-      graphRef.current.d3Force('center', undefined);
-      graphRef.current.d3Force('link', undefined);
+      fgRef.current.d3Force('charge', undefined);
+      fgRef.current.d3Force('center', undefined);
+      fgRef.current.d3Force('link', undefined);
 
       // Add stable forces with minimal movement
-      graphRef.current.d3Force('charge', d3.forceManyBody().strength(-100));
-      graphRef.current.d3Force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2).strength(0.05));
-      graphRef.current.d3Force('link', d3.forceLink().distance(80).strength(0.2));
+      fgRef.current.d3Force('charge', d3.forceManyBody().strength(-100));
+      fgRef.current.d3Force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2).strength(0.05));
+      fgRef.current.d3Force('link', d3.forceLink().distance(80).strength(0.2));
 
       // Reduce simulation intensity
-      graphRef.current.d3Force('x', d3.forceX(dimensions.width / 2).strength(0.05));
-      graphRef.current.d3Force('y', d3.forceY(dimensions.height / 2).strength(0.05));
+      fgRef.current.d3Force('x', d3.forceX(dimensions.width / 2).strength(0.05));
+      fgRef.current.d3Force('y', d3.forceY(dimensions.height / 2).strength(0.05));
     }
   }, [dimensions, selectedBook]);
 
   // Add useEffect to center the graph on mount and dimension changes
   useEffect(() => {
-    if (graphRef.current) {
+    if (fgRef.current) {
       // Center the graph with animation
       requestAnimationFrame(() => {
-        graphRef.current?.zoomToFit(400, 100); // Increased padding for better centering
+        fgRef.current?.zoomToFit(400, 100); // Increased padding for better centering
       });
     }
   }, [dimensions, selectedBook]);
@@ -534,7 +534,7 @@ export default function NetworkVisualization() {
               <Fade in={!isLoading && isGraphReady} timeout={500}>
                 <Box sx={{ width: '100%', height: '100%' }}>
                   <ForceGraph2D
-                    ref={graphRef}
+                    ref={fgRef}
                     graphData={getGraphData()}
                     onNodeClick={handleNodeClick}
                     nodeCanvasObject={renderNodeCanvas}
@@ -557,12 +557,12 @@ export default function NetworkVisualization() {
                       }
                     }}
                     warmupTicks={0}
-                    nodeLabel={(node: NetworkNode) => ''}
+                    nodeLabel={() => ''}
                     linkCurvature={0.3}
                     linkDirectionalParticles={0}
                     onEngineStop={() => {
                       // Ensure graph is centered after layout stabilizes
-                      graphRef.current?.zoomToFit(400, 100);
+                      fgRef.current?.zoomToFit(400, 100);
                     }}
                   />
                 </Box>

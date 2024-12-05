@@ -407,3 +407,16 @@ export const VENDOR_LISTINGS: VendorListing[] = [
     ]
   }
 ];
+
+export type VendorCategory =
+  | 'food'
+  | 'clothing'
+  | 'transport'
+  | 'stationery'
+  | 'other'
+  | 'venue'
+  | 'catering'
+  | 'flowers'
+  | 'matchmaking'
+  | 'modiste'
+  | 'music';

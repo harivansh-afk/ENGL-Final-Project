@@ -1,4 +1,3 @@
-import React from 'react';
 import { Typography, Paper, Grid, Chip, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SocialClassView from '../components/SocialClassView';
