@@ -25,7 +25,7 @@ const VendorCard = ({ vendor, onClick }: VendorCardProps) => {
   return (
     <article
       onClick={onClick}
-      className="group bg-cream-50 rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl cursor-pointer"
+      className="group bg-cream-50 rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl cursor-pointer flex flex-col h-full"
     >
       <div className="aspect-w-16 aspect-h-9 bg-sage-200">
         {imageUrl ? (
@@ -43,11 +43,11 @@ const VendorCard = ({ vendor, onClick }: VendorCardProps) => {
         )}
       </div>
 
-      <div className="p-6 space-y-4">
-        <div>
+      <div className="p-6 flex flex-col flex-grow space-y-4">
+        <div className="flex-grow">
           <div className="flex justify-between items-start mb-2">
             <h2 className="font-cormorant text-2xl text-sage-900">{name}</h2>
-            <span className="text-sage-700 font-medium">{priceRange}</span>
+            <span className="text-sage-700 font-medium whitespace-nowrap ml-2">{priceRange}</span>
           </div>
           <p className="text-sage-700 text-sm mb-2">{location}</p>
           <span className="inline-block px-3 py-1 rounded-full text-xs capitalize bg-sage-100 text-sage-700">
@@ -55,7 +55,7 @@ const VendorCard = ({ vendor, onClick }: VendorCardProps) => {
           </span>
         </div>
 
-        <p className="text-sage-700 line-clamp-2">{description}</p>
+        <p className="text-sage-700 line-clamp-3 min-h-[4.5rem]">{description}</p>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -72,7 +72,7 @@ const VendorCard = ({ vendor, onClick }: VendorCardProps) => {
           </div>
         </div>
 
-        <button className="w-full bg-sage-500 text-white px-4 py-2 rounded-lg hover:bg-sage-600 transition">
+        <button className="w-full bg-sage-500 text-white px-4 py-2 rounded-lg hover:bg-sage-600 transition mt-auto">
           View Details
         </button>
       </div>
