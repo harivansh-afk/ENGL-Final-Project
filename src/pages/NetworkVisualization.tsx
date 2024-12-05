@@ -2,7 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 import { characterNetwork } from '../data/character-network';
 import { CharacterNode, Relationship, BookNode } from '../types/character-network';
 import { Box, Typography, Paper, Grid, IconButton, Tooltip, Chip, Divider, Container, CircularProgress, Fade } from '@mui/material';
-import { ForceGraph2D as ForceGraph } from 'react-force-graph';
+import { ForceGraph2D as ForceGraph, NodeObject, LinkObject } from 'react-force-graph';
 import { ArrowBack, Help, ZoomIn, ZoomOut, CenterFocusStrong } from '@mui/icons-material';
 import * as d3 from 'd3';
 
@@ -25,7 +25,7 @@ interface BaseNetworkNode extends d3.SimulationNodeDatum {
 // Book-specific node interface
 interface NetworkBookNode extends BaseNetworkNode {
   type: 'book';
-  year: string;
+  year: number;
 }
 
 // Character-specific node interface
@@ -36,20 +36,29 @@ interface NetworkCharacterNode extends BaseNetworkNode {
 // Union type for all possible node types
 type NetworkNode = NetworkBookNode | NetworkCharacterNode;
 
+// Updated NetworkLink interface to match D3's expectations
 interface NetworkLink extends d3.SimulationLinkDatum<NetworkNode> {
-  source: string | NetworkNode;
-  target: string | NetworkNode;
+  source: string | number | NetworkNode;
+  target: string | number | NetworkNode;
   type: string;
   color: string;
 }
 
-// Proper typing for ForceGraph methods
-interface ForceGraphMethods<NodeType extends d3.SimulationNodeDatum = NetworkNode, LinkType extends d3.SimulationLinkDatum<NodeType> = NetworkLink> {
+// Complete ForceGraph methods interface
+interface ForceGraphMethods<NodeType = NodeObject<NetworkNode>, LinkType = LinkObject<NetworkNode, NetworkLink>> {
   zoom: (k?: number) => number;
   zoomToFit: (duration?: number, padding?: number) => void;
   d3Force: (forceName: string, force?: d3.Force<NodeType, LinkType>) => void;
   d3ReheatSimulation: () => void;
   getZoom: () => number;
+  emitParticle: (particle: any) => void;
+  pauseAnimation: () => void;
+  resumeAnimation: () => void;
+  centerAt: (x?: number, y?: number, duration?: number) => void;
+  // Add other required methods
+  width: () => number;
+  height: () => number;
+  refresh: () => void;
 }
 
 type ForceGraphInstance = ForceGraphMethods<NetworkNode, NetworkLink>;
@@ -94,7 +103,7 @@ export default function NetworkVisualization() {
   const [selectedRelationships, setSelectedRelationships] = useState<Relationship[]>([]);
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const fgRef = useRef<ForceGraphMethods<NetworkNode, NetworkLink>>();
+  const fgRef = useRef<ForceGraphMethods>();
   const [isLoading, setIsLoading] = useState(true);
   const [isGraphReady, setIsGraphReady] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
@@ -756,7 +765,7 @@ export default function NetworkVisualization() {
                     <Typography color="text.secondary" gutterBottom sx={{
                       fontFamily: '"Lato", sans-serif'
                     }}>
-                      {selectedNode.type === 'book' ? `Published: ${(selectedNode as BookNode).year}` : selectedNode.novel}
+                      {selectedNode.type === 'book' ? `Published: ${selectedNode.year}` : selectedNode.novel}
                     </Typography>
                     <Typography variant="body1" paragraph sx={{
                       mt: 2,
