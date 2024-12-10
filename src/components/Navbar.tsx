@@ -8,6 +8,7 @@ const navItems = [
   { name: 'Vendors', path: '/vendors' },
   { name: 'Success Stories', path: '/success-stories' },
   { name: 'Market Value', path: '/market-calculator' },
+  { name: 'My Experience', path: '/my-experience' },
 ];
 
 const analysisItems = [
